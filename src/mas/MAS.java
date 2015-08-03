@@ -7,6 +7,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JFrame;
@@ -14,32 +15,31 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author SCAREX
  * 
  */
-public class MAS extends JFrame
-{
+public class MAS extends JFrame {
 	private static final long serialVersionUID = -285116092617886296L;
 	private static MAS INSTANCE;
-	private boolean run = true;
+	private boolean isRunning = true;
 
 	private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
 	private final Canvas modelCanvas = new Canvas();
 
 	private MASMenuBar menuBar = new MASMenuBar();
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		INSTANCE = new MAS();
+            // setup lwjgl natives
+            LWJGLSetup.load(SystemUtils.getAppFolder("mas"));
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        INSTANCE = new MAS();
 	}
 
 	public static MAS getMAS() {
@@ -52,7 +52,7 @@ public class MAS extends JFrame
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				run = false;
+				isRunning = false;
 			}
 		});
 		this.setLayout(new BorderLayout());
@@ -75,11 +75,11 @@ public class MAS extends JFrame
 
 	private void initCanvas() {
 		modelCanvas.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				newCanvasSize.set(modelCanvas.getSize());
-			}
-		});
+            @Override
+            public void componentResized(ComponentEvent e) {
+                newCanvasSize.set(modelCanvas.getSize());
+            }
+        });
 
 		this.add(modelCanvas, BorderLayout.CENTER);
 
@@ -92,34 +92,19 @@ public class MAS extends JFrame
 	}
 
 	private void initDisplay() {
-		(new Thread() {
-			@Override
-			public void run() {
-				try {
-					Display.create();
-
-					Dimension dim;
-					while (!Display.isCloseRequested() && run) {
-						dim = newCanvasSize.getAndSet(null);
-
-						if (dim != null) {
-							GL11.glViewport(0, 0, dim.width, dim.height);
-						}
-
-						GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-						Display.update();
-					}
-					Display.destroy();
-					MAS.getMAS().dispose();
-				} catch (LWJGLException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}).start();
+		Thread threadRendering = new ThreadRendering(this);
+		threadRendering.start();
 	}
 
 	public void shutDown() {
-		this.run = false;
+		this.isRunning = false;
 	}
+
+    public AtomicReference<Dimension> getNewCanvasSize() {
+        return newCanvasSize;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
 }

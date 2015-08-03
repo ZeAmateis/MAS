@@ -1,0 +1,56 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
+def filteredSourceDir = file("${buildDir}/filtered")
+
+group 'mas'
+version '1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/"]
+        }
+    }
+    filtered {
+        java {
+            srcDirs = [filteredSourceDir]
+        }
+    }
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+}
+
+task processVersion(type: Copy) {
+    from sourceSets.main.java
+    into filteredSourceDir
+    // Substitute property references in files
+    // Use some of the filters provided by Ant
+    filter(FixCrLfFilter)
+    filter(ReplaceTokens, tokens: ['version': version])
+    // Use a closure to filter each line
+    filter { String line ->
+        ("$line".replaceAll('"=masversion="', '"'+version+'"'))
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}
+
+//force UTF-8 to the compileJava task
+compileJava.options.encoding = 'UTF-8'
+
+compileJava.dependsOn processVersion
