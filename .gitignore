@@ -60,6 +60,9 @@ $RECYCLE.BIN/
 
 # Custom
 .settings/
+.gradle/
+build/
+.classpath
 
 ## IDEA
 .idea/
