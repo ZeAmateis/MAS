@@ -69,11 +69,11 @@ public class MASLang
 	}
 
 	public static String translate(String key) {
-		return langMap.containsKey(key) ? langMap.get(key) : enMap.get(key);
+		return langMap != null && langMap.containsKey(key) ? langMap.get(key) : enMap.get(key);
 	}
 
 	public static String translate(String key, Object ... params) {
-		return String.format(langMap.containsKey(key) ? langMap.get(key) : enMap.get(key));
+		return String.format(langMap != null && langMap.containsKey(key) ? langMap.get(key) : enMap.get(key));
 	}
 
 	public static void forceLangDownload(File folder) {
