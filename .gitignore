@@ -67,3 +67,4 @@ build/
 ## IDEA
 .idea/
 *.iml
+/bin/

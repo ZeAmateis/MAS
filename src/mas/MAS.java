@@ -36,6 +36,7 @@ public class MAS extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
             LWJGLSetup.load(SystemUtils.getAppFolder("mas"));
+            MASLang.load(SystemUtils.getAppFolder("mas"));
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
@@ -67,7 +68,8 @@ public class MAS extends JFrame {
 		JPanel rightPanel = new MASRightPanel();
 		this.add(rightPanel, BorderLayout.EAST);
 
-		this.setMinimumSize(new Dimension(400, 400));
+		this.setMinimumSize(new Dimension(600, 600));
+		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 
 		this.initDisplay();

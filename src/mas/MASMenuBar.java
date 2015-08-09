@@ -14,8 +14,8 @@ import javax.swing.JMenuItem;
 public class MASMenuBar extends JMenuBar
 {
 	private static final long serialVersionUID = -6394631766691329465L;
-	private JMenu filesMenu = new JMenu("Files");
-	private JMenu editMenu = new JMenu("Edit");
+	private JMenu filesMenu = new JMenu(MASLang.translate("menu.file"));
+	private JMenu editMenu = new JMenu(MASLang.translate("menu.edit"));
 
 	public MASMenuBar() {
 		super();
@@ -25,12 +25,12 @@ public class MASMenuBar extends JMenuBar
 	}
 
 	private void initFilesMenu() {
-		this.filesMenu.add(new JMenuItem("New"));
-		this.filesMenu.add(new JMenuItem("Open"));
+		this.filesMenu.add(new JMenuItem(MASLang.translate("menu.file.new")));
+		this.filesMenu.add(new JMenuItem(MASLang.translate("menu.file.open")));
 
 		this.filesMenu.addSeparator();
 
-		JMenuItem closeItem = new JMenuItem("Close");
+		JMenuItem closeItem = new JMenuItem(MASLang.translate("menu.file.quit"));
 		closeItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent paramActionEvent) {
