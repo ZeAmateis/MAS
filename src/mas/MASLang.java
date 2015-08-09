@@ -47,7 +47,6 @@ public class MASLang
 	}
 
 	private static void parseLangFiles() {
-		long t = System.currentTimeMillis();
 		enMap = MASLang.parseFile(new File(langFolder, "en_US.lang"));
 		if (new File(langFolder, Locale.getDefault() + ".lang").exists()) langMap = parseFile(new File(langFolder, Locale.getDefault() + ".lang"));
 	}
