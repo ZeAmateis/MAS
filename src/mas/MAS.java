@@ -35,8 +35,8 @@ public class MAS extends JFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
-            LWJGLSetup.load(SystemUtils.getAppFolder("mas"));
-            MASLang.load(SystemUtils.getAppFolder("mas"));
+            LWJGLSetup.load(SystemUtils.getAppFolder("MAS"));
+            MASLang.load(SystemUtils.getAppFolder("MAS"));
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
