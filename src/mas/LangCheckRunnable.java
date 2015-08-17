@@ -39,7 +39,7 @@ public class LangCheckRunnable implements Runnable
 			} else if (con.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
 				System.err.println("A custom lang file as been detected, you can send pull requests at https://github.com/SCAREXgaming/MASLang to help");
 			} else {
-				System.err.println("Unhandled exception : ");
+				System.err.println("Unhandled exception for " + this.locale + " : ");
 				System.err.println(con.getResponseCode() + " : " + con.getResponseMessage());
 			}
 		} catch (IOException e) {
