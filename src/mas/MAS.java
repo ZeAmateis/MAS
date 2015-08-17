@@ -17,6 +17,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.lwjgl.opengl.Display;
 
+import mas.render.ThreadRendering;
+
 /**
  * @author SCAREX
  * 
