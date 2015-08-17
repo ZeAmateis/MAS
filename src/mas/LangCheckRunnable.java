@@ -3,21 +3,13 @@ package mas;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-
 import mas.git.GitUtils;
-import mas.git.GitUtils.GitContent;
-import mas.git.GitUtils.GitContentDeserializer;
 
 /**
  * @author SCAREX
@@ -36,18 +28,19 @@ public class LangCheckRunnable implements Runnable
 	@Override
 	public void run() {
 		try {
-			HttpURLConnection con = (HttpURLConnection) new URL("https://api.github.com/repos/SCAREXgaming/MASLang/contents/" + locale + ".lang").openConnection();
+			HttpURLConnection con = (HttpURLConnection) new URL("https://raw.githubusercontent.com/SCAREXgaming/MASLang/master/" + this.locale + ".lang").openConnection();
+			File f = new File(this.folder, this.locale + ".lang");
+			byte[] fh = GitUtils.getGitHash(new FileInputStream(f), f.length());
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				GsonBuilder builder = new GsonBuilder();
-				builder.registerTypeAdapter(GitContent.class, new GitContentDeserializer());
-				Gson gson = builder.create();
-				GitContent gc = gson.fromJson(IOUtils.inputStreamToString(new InputStreamReader(con.getInputStream(), "UTF-8")), GitContent.class);
-				HashMap<String, JsonElement> map = GitUtils.convertEntrySetToHashMap(gc.content);
-				File f = new File(this.folder, this.locale + ".lang");
-				byte[] fh = GitUtils.getGitHash(new FileInputStream(f), f.length());
-				if (!Arrays.equals(IOUtils.hexToByteArray(map.get("sha").getAsString()), fh)) IOUtils.copyURLToFile(new URL("https://raw.githubusercontent.com/SCAREXgaming/MASLang/master/" + this.locale + ".lang"), f);
-			} else {
+				if (!Arrays.equals(fh, IOUtils.hexToByteArray(con.getHeaderField("Etag").substring(1, con.getHeaderField("Etag").length() - 1)))) {
+					IOUtils.copyURLToFile(con.getURL(), f);
+					System.out.println("Lang file " + this.locale + ".lang is updated");
+				}
+			} else if (con.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
 				System.err.println("A custom lang file as been detected, you can send pull requests at https://github.com/SCAREXgaming/MASLang to help");
+			} else {
+				System.err.println("Unhandled exception : ");
+				System.err.println(con.getResponseCode() + " : " + con.getResponseMessage());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
