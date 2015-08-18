@@ -16,8 +16,9 @@ jar {
   from {
     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }
-  from ('resources') {
-    include 'logo.png'
+  from ('src') {
+    include '**/*.png'
+    include '**/*.txt'
   }
 }
 
