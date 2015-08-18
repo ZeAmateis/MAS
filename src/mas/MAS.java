@@ -51,6 +51,7 @@ public class MAS extends JFrame {
 
 	private MAS() {
 		this.setTitle("MAS");
+		this.setIconImage(this.getToolkit().getImage(MAS.class.getResource("/logo.png")));
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
