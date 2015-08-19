@@ -36,7 +36,9 @@ public class MASLang
 			}
 			return;
 		} else {
-			(new Thread(new LangCheckRunnable(langFolder, l))).start();
+		    Thread t = new Thread(new LangCheckRunnable(langFolder, l));
+		    t.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+			t.start();
 		}
 	}
 

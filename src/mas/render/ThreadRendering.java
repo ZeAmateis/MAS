@@ -54,5 +54,6 @@ public class ThreadRendering extends Thread
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
+        System.exit(-1);
     }
 }

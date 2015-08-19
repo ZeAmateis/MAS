@@ -7,7 +7,11 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JFrame;
@@ -27,6 +31,30 @@ public class MAS extends JFrame {
 	private static final long serialVersionUID = -285116092617886296L;
 	private static MAS INSTANCE;
 	private boolean isRunning = true;
+	public static File LOGS_FOLDER;
+	public static final SimpleDateFormat SIMPLE_TIME = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+	public static final Thread.UncaughtExceptionHandler EXCEPTION_HANDLER = new Thread.UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            try {
+                System.err.println("Error found in thread " + t.getName() + " : " + e.getMessage());
+                e.printStackTrace();
+                String name = t.getName() + "-" + SIMPLE_TIME.format(new Date());
+                File f;
+                byte i = 0;
+                while ((f = new File(LOGS_FOLDER, name + "-" + i + ".log")).exists()) {
+                    i++;
+                }
+                f.createNewFile();
+                System.err.println("Error will be saved in file " + f.getAbsolutePath());
+                PrintStream ps = new PrintStream(f);
+                e.printStackTrace(ps);
+            } catch (Exception e1) {
+                System.err.println("Cannot write crash report !");
+                e1.printStackTrace();
+            }
+        }
+    };
 
 	private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
 	private final Canvas modelCanvas = new Canvas();
@@ -35,6 +63,9 @@ public class MAS extends JFrame {
 
     public static void main(String[] args) {
 		try {
+		    LOGS_FOLDER = new File(SystemUtils.getAppFolder("MAS"), "logs");
+		    LOGS_FOLDER.mkdirs();
+		    Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
             LWJGLSetup.load(SystemUtils.getAppFolder("MAS"));
@@ -98,6 +129,7 @@ public class MAS extends JFrame {
 
 	private void initDisplay() {
 		Thread threadRendering = new ThreadRendering(this);
+		threadRendering.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
 		threadRendering.start();
 	}
 
