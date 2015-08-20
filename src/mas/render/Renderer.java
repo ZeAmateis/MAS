@@ -19,7 +19,7 @@ import mas.utils.MathUtils;
  */
 public class Renderer
 {
-    private static final float FOV = 70;
+    private static final float FOV = 80;
     private static final float NEAR_PLANE = 0.1F;
     private static final float FAR_PLANE = 1000;
 
@@ -34,16 +34,22 @@ public class Renderer
     public static void renderEntity(Entity e, BasicShader shader) {
         TexturedModel model = e.getModel();
         RawModel rawModel = model.getModel();
+        
         GL30.glBindVertexArray(rawModel.getVaoID());
+        
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+        
         Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(e.getPosition(), e.getRotationX(), e.getRotationY(), e.getRotationZ(), e.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
-        Renderer.initProjectionMatrix();
+        
         shader.loadProjectionMatrix(Renderer.projectionMatrix);
+        
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
+        
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);

@@ -83,10 +83,13 @@ public class ThreadRendering extends Thread
             while (!Display.isCloseRequested() && mas.isRunning()) {
                 dim = mas.getNewCanvasSize().getAndSet(null);
                 if (dim != null) GL11.glViewport(0, 0, dim.width, dim.height);
+
                 camera.move();
+
                 Renderer.prepare();
                 shader.start();
                 shader.loadViewMatrix(camera);
+                Renderer.initProjectionMatrix();
 
                 Renderer.renderEntity(entity, shader);
 

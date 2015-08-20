@@ -26,10 +26,10 @@ public class ModelLoader
     private static ArrayList<Integer> vbos = new ArrayList<Integer>();
     private static ArrayList<Integer> textures = new ArrayList<Integer>();
 
-    public static RawModel loadToVAO(float[] pos, float[] tCoords,int[] indices) {
+    public static RawModel loadToVAO(float[] pos, float[] tCoords, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
-        storeDataInList(0, 3,pos);
+        storeDataInList(0, 3, pos);
         storeDataInList(1, 2, tCoords);
         unbindVAO();
         return new RawModel(vaoID, indices.length);
