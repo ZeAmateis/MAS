@@ -10,18 +10,19 @@ import mas.render.texture.ModelTexture;
  */
 public class Terrain
 {
-    private static final float SIZE = 800.0F;
-    private static final int VERTEX_COUNT = 128;
+    public static final float SIZE = 1000.0F;
+    public static final int VERTEX_COUNT = 128;
     
     private float x;
     private float z;
     private RawModel model;
     private ModelTexture texture;
     
-    public Terrain(float x, float z, ModelLoader loader,ModelTexture texture) {
+    public Terrain(float x, float z,ModelTexture texture) {
         this.x = x * SIZE;
         this.z = z * SIZE;
         this.texture = texture;
+        this.model = generateTerrain();
     }
     
     private RawModel generateTerrain(){
@@ -56,5 +57,33 @@ public class Terrain
             }
         }
         return ModelLoader.loadToVAO(vertices, textureCoords, indices);
+    }
+
+    /**
+     * @return the x
+     */
+    public float getX() {
+        return x;
+    }
+
+    /**
+     * @return the z
+     */
+    public float getZ() {
+        return z;
+    }
+
+    /**
+     * @return the model
+     */
+    public RawModel getModel() {
+        return model;
+    }
+
+    /**
+     * @return the texture
+     */
+    public ModelTexture getTexture() {
+        return texture;
     }
 }

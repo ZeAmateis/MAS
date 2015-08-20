@@ -1,16 +1,21 @@
 package mas.render;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import mas.MAS;
 import mas.entity.Entity;
 import mas.render.model.RawModel;
 import mas.render.model.TexturedModel;
+import mas.render.terrain.Terrain;
 import mas.shaders.BasicShader;
+import mas.shaders.TerrainShader;
 import mas.utils.MathUtils;
 
 /**
@@ -34,25 +39,50 @@ public class Renderer
     public static void renderEntity(Entity e, BasicShader shader) {
         TexturedModel model = e.getModel();
         RawModel rawModel = model.getModel();
-        
+
         GL30.glBindVertexArray(rawModel.getVaoID());
-        
+
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        
+
         Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(e.getPosition(), e.getRotationX(), e.getRotationY(), e.getRotationZ(), e.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
-        
+
         shader.loadProjectionMatrix(Renderer.projectionMatrix);
-        
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
-        
+
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        
+
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
+    }
+
+    public static void renderTerrains(List<Terrain> terrains, TerrainShader shader) {
+        for (Terrain t : terrains) {
+            RawModel rawModel = t.getModel();
+
+            GL30.glBindVertexArray(rawModel.getVaoID());
+
+            GL20.glEnableVertexAttribArray(0);
+            GL20.glEnableVertexAttribArray(1);
+
+            Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(new Vector3f(t.getX(), 0.0F, t.getZ()), 0.0F, 0.0F, 0.0F, 1.0F);
+            shader.loadTransformationMatrix(transformationMatrix);
+
+            shader.loadProjectionMatrix(Renderer.projectionMatrix);
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, t.getTexture().getId());
+
+            GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+
+            GL20.glDisableVertexAttribArray(0);
+            GL20.glDisableVertexAttribArray(1);
+            GL30.glBindVertexArray(0);
+        }
     }
 
     public static void initProjectionMatrix() {
