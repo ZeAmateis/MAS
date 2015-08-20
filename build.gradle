@@ -45,6 +45,8 @@ sourceSets {
 dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
+    compile 'org.slick2d:slick2d-core:1.0.1'
 }
 
 task processVersion(type: Copy) {

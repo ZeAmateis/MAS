@@ -1,4 +1,4 @@
-package mas.render;
+package mas.render.model;
 
 /**
  * @author SCAREX

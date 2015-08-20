@@ -144,4 +144,11 @@ public class MAS extends JFrame {
     public boolean isRunning() {
         return isRunning;
     }
+
+    /**
+     * @return the modelCanvas
+     */
+    public Canvas getModelCanvas() {
+        return modelCanvas;
+    }
 }
