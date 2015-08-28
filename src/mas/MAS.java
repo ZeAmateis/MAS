@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,6 +56,23 @@ public class MAS extends JFrame {
             }
         }
     };
+    public static final PrintStream LOG_BASE_STREAM = System.out;
+    public static final PrintStream LOG_BASE_ERR_STREAM = System.err;
+    public static PrintStream LOG_FILE_STREAM;
+    public static final OutputStream LOG_STREAM = new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            LOG_BASE_STREAM.write(b);
+            LOG_FILE_STREAM.write(b);
+        }
+    };
+    public static final OutputStream LOG_ERR_STREAM = new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            LOG_BASE_ERR_STREAM.write(b);
+            LOG_FILE_STREAM.write(b);
+        }
+    };
 
 	private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
 	private final Canvas modelCanvas = new Canvas();
@@ -65,6 +83,13 @@ public class MAS extends JFrame {
 		try {
 		    LOGS_FOLDER = new File(SystemUtils.getAppFolder("MAS"), "logs");
 		    LOGS_FOLDER.mkdirs();
+		    
+		    File latestLogsFile = new File(LOGS_FOLDER, "latest_logs.log");
+		    latestLogsFile.createNewFile();
+		    LOG_FILE_STREAM = new PrintStream(latestLogsFile);
+		    System.setOut(new PrintStream(LOG_STREAM));
+		    System.setErr(new PrintStream(LOG_ERR_STREAM));
+		    
 		    Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives

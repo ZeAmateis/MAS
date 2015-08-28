@@ -30,9 +30,9 @@ public class GitUtils
 		return map;
 	}
 
-	public static byte[] getGitHash(InputStream is, long length) throws NoSuchAlgorithmException, IOException {
+	public static byte[] getGitHash(InputStream is, long length, GitType type) throws NoSuchAlgorithmException, IOException {
 		MessageDigest md = MessageDigest.getInstance("SHA1");
-		md.update(("blob " + length + "\0").getBytes());
+		md.update((type.name().toLowerCase() + " " + length + "\0").getBytes());
 		byte[] buffer = new byte[4096];
 		int len;
 		while ((len = is.read(buffer)) != -1) {
@@ -56,5 +56,10 @@ public class GitUtils
 		public GitContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			return new GitContent(json.getAsJsonObject().entrySet());
 		}
+	}
+	
+	public static enum GitType
+	{
+	    BLOB, TREE;
 	}
 }

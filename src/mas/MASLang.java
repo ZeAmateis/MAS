@@ -54,7 +54,7 @@ public class MASLang
 			while ((l = br.readLine()) != null) {
 				int i;
 				if (l.length() > 0 && l.charAt(0) != '#' && (i = l.indexOf('=')) != -1) {
-					map.put(l.substring(0, i), l.substring(i + 1));
+					map.put(l.substring(0, i).trim(), l.substring(i + 1).trim());
 				}
 			}
 		} catch (Exception e) {
