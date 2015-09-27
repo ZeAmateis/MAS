@@ -1,4 +1,4 @@
-package mas;
+package mas.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

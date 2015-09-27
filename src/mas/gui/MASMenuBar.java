@@ -1,4 +1,4 @@
-package mas;
+package mas.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+import mas.MAS;
+import mas.MASLang;
 
 /**
  * @author SCAREX

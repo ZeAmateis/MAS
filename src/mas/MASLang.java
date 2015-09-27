@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 
+import mas.utils.IOUtils;
+
 /**
  * This class is used to translate the program.
  * 

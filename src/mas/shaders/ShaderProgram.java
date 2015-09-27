@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import mas.IOUtils;
+import mas.utils.IOUtils;
 
 /**
  * @author SCAREX

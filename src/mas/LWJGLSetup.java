@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import mas.utils.IOUtils;
+import mas.utils.SystemUtils;
+
 public class LWJGLSetup
 {
 

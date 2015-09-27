@@ -16,25 +16,31 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
+import mas.gui.MASLeftPanel;
+import mas.gui.MASMenuBar;
+import mas.gui.MASRightPanel;
 import mas.render.ThreadRendering;
+import mas.utils.SystemUtils;
 
 /**
  * @author SCAREX
  * 
  */
-public class MAS extends JFrame {
-	private static final long serialVersionUID = -285116092617886296L;
-	private static MAS INSTANCE;
-	private boolean isRunning = true;
-	public static File LOGS_FOLDER;
-	public static final SimpleDateFormat SIMPLE_TIME = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
-	public static final Thread.UncaughtExceptionHandler EXCEPTION_HANDLER = new Thread.UncaughtExceptionHandler() {
+public class MAS extends JFrame
+{
+    private static final long serialVersionUID = -285116092617886296L;
+    private static MAS INSTANCE;
+    private boolean isRunning = true;
+    public static File LOGS_FOLDER;
+    public static final SimpleDateFormat SIMPLE_TIME = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+    public static final Thread.UncaughtExceptionHandler EXCEPTION_HANDLER = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
             try {
@@ -74,24 +80,24 @@ public class MAS extends JFrame {
         }
     };
 
-	private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
-	private final Canvas modelCanvas = new Canvas();
+    private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
+    private AWTGLCanvas modelCanvas;
 
-	private MASMenuBar menuBar = new MASMenuBar();
+    private MASMenuBar menuBar = new MASMenuBar();
 
     public static void main(String[] args) {
-		try {
-		    LOGS_FOLDER = new File(SystemUtils.getAppFolder("MAS"), "logs");
-		    LOGS_FOLDER.mkdirs();
-		    
-		    File latestLogsFile = new File(LOGS_FOLDER, "latest_logs.log");
-		    latestLogsFile.createNewFile();
-		    LOG_FILE_STREAM = new PrintStream(latestLogsFile);
-		    System.setOut(new PrintStream(LOG_STREAM));
-		    System.setErr(new PrintStream(LOG_ERR_STREAM));
-		    
-		    Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        try {
+            LOGS_FOLDER = new File(SystemUtils.getAppFolder("MAS"), "logs");
+            LOGS_FOLDER.mkdirs();
+
+            File latestLogsFile = new File(LOGS_FOLDER, "latest_logs.log");
+            latestLogsFile.createNewFile();
+            LOG_FILE_STREAM = new PrintStream(latestLogsFile);
+            System.setOut(new PrintStream(LOG_STREAM));
+            System.setErr(new PrintStream(LOG_ERR_STREAM));
+
+            Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
             LWJGLSetup.load(SystemUtils.getAppFolder("MAS"));
             MASLang.load(SystemUtils.getAppFolder("MAS"));
@@ -99,68 +105,73 @@ public class MAS extends JFrame {
             e.printStackTrace();
         }
         INSTANCE = new MAS();
-	}
+    }
 
-	public static MAS getMAS() {
-		return INSTANCE;
-	}
+    public static MAS getMAS() {
+        return INSTANCE;
+    }
 
-	private MAS() {
-		this.setTitle("MAS");
-		this.setIconImage(this.getToolkit().getImage(MAS.class.getResource("/logo.png")));
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				isRunning = false;
-			}
-		});
-		this.setLayout(new BorderLayout());
+    private MAS() {
+        this.setTitle("MAS");
+        this.setIconImage(this.getToolkit().getImage(MAS.class.getResource("/logo.png")));
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                isRunning = false;
+            }
+        });
+        this.setLayout(new BorderLayout());
 
-		this.setJMenuBar(this.menuBar);
+        this.setJMenuBar(this.menuBar);
 
-		this.initCanvas();
+        this.initCanvas();
 
-		JPanel leftPanel = new MASLeftPanel();
-		this.add(leftPanel, BorderLayout.WEST);
+        MASLeftPanel leftPanel = new MASLeftPanel();
+        this.add(leftPanel, BorderLayout.WEST);
 
-		JPanel rightPanel = new MASRightPanel();
-		this.add(rightPanel, BorderLayout.EAST);
+        MASRightPanel rightPanel = new MASRightPanel();
+        this.add(rightPanel, BorderLayout.EAST);
 
-		this.setMinimumSize(new Dimension(600, 600));
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+        this.setMinimumSize(new Dimension(600, 600));
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
 
-		this.initDisplay();
-	}
+        this.initDisplay();
+    }
 
-	private void initCanvas() {
-		modelCanvas.addComponentListener(new ComponentAdapter() {
+    private void initCanvas() {
+        try {
+            this.modelCanvas = new AWTGLCanvas();
+        } catch (LWJGLException e1) {
+            e1.printStackTrace();
+        }
+        modelCanvas.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 newCanvasSize.set(modelCanvas.getSize());
             }
         });
 
-		this.add(modelCanvas, BorderLayout.CENTER);
+        this.add(modelCanvas, BorderLayout.CENTER);
 
-		try {
-			Display.setParent(this.modelCanvas);
-			Display.setVSyncEnabled(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            Display.setParent(this.modelCanvas);
+            Display.setVSyncEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void initDisplay() {
-		Thread threadRendering = new ThreadRendering(this);
-		threadRendering.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
-		threadRendering.start();
-	}
+    private void initDisplay() {
+        Thread threadRendering = new ThreadRendering(this);
+        threadRendering.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+        threadRendering.start();
+    }
 
-	public void shutDown() {
-		this.isRunning = false;
-	}
+    public void shutDown() {
+        this.isRunning = false;
+    }
 
     public AtomicReference<Dimension> getNewCanvasSize() {
         return newCanvasSize;
