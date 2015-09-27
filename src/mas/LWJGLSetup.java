@@ -1,10 +1,15 @@
 package mas;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
-public class LWJGLSetup {
+public class LWJGLSetup
+{
 
     private static boolean loaded;
 
@@ -13,15 +18,16 @@ public class LWJGLSetup {
      */
     public static void load(File folder) throws IOException {
         if (!loaded) {
-            if (!folder.exists())
-                folder.mkdirs();
+            if (!folder.exists()) folder.mkdirs();
             if (folder.isDirectory()) {
                 Map<SystemUtils.OperatingSystem, String[]> nativesMap = createNativesMap();
                 String arch = System.getProperty("os.arch");
                 boolean is64bits = !arch.equals("x86");
                 SystemUtils.OperatingSystem os = SystemUtils.getOS();
 
-                String[] arch64Variants = new String[] { "_64", "64", "" };
+                String[] arch64Variants = new String[] {
+                        "_64", "64",
+                        "" };
                 String[] nativesList = nativesMap.get(os);
                 if (nativesList == null) {
                     System.err.println("OS " + os.name() + " is not supported, sorry :(");
@@ -72,13 +78,22 @@ public class LWJGLSetup {
 
     private static Map<SystemUtils.OperatingSystem, String[]> createNativesMap() {
         Map<SystemUtils.OperatingSystem, String[]> nativesMap = new HashMap<>();
-        String[] win = new String[] { "jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll" };
+        String[] win = new String[] {
+                "jinput-dx8.dll",
+                "jinput-raw.dll",
+                "lwjgl.dll",
+                "OpenAL32.dll" };
         nativesMap.put(SystemUtils.OperatingSystem.WINDOWS, win);
 
-        String[] macosx = new String[] { "liblwjgl.jnilib", "liblwjgl-osx.jnilib", "openal.dylib" };
+        String[] macosx = new String[] {
+                "liblwjgl.jnilib",
+                "liblwjgl-osx.jnilib",
+                "openal.dylib" };
         nativesMap.put(SystemUtils.OperatingSystem.MACOSX, macosx);
 
-        String[] unix = new String[] { "liblwjgl.so", "libopenal.so" };
+        String[] unix = new String[] {
+                "liblwjgl.so",
+                "libopenal.so" };
         nativesMap.put(SystemUtils.OperatingSystem.LINUX, unix);
         nativesMap.put(SystemUtils.OperatingSystem.SOLARIS, unix);
         return nativesMap;

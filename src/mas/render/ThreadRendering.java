@@ -86,7 +86,7 @@ public class ThreadRendering extends Thread
             TexturedModel tModel = new TexturedModel(model, texture);
 
             Entity entity = new Entity(tModel, new Vector3f(0.0F, 1.0F, -4.0F), 0.0F, 0.0F, 0.0F, 1.0F);
-            
+
             Terrain terrain = new Terrain(-0.9F, -0.9F, new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/terrain.png"))));
 
             while (!Display.isCloseRequested() && mas.isRunning()) {

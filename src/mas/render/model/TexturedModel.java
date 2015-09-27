@@ -10,7 +10,7 @@ public class TexturedModel
 {
     protected RawModel model;
     protected ModelTexture texture;
-    
+
     public TexturedModel(RawModel model, ModelTexture texture) {
         this.model = model;
         this.texture = texture;

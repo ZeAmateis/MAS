@@ -12,9 +12,10 @@ public class Entity
 {
     protected TexturedModel model;
     protected Vector3f position;
-    protected float rotationX, rotationY, rotationZ;
+    protected float rotationX,
+            rotationY, rotationZ;
     protected float scale;
-    
+
     public Entity(TexturedModel model, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
         this.model = model;
         this.position = position;
@@ -23,7 +24,7 @@ public class Entity
         this.rotationZ = rotationZ;
         this.scale = scale;
     }
-    
+
     public void increaseRotation(float dx, float dy, float dz) {
         this.rotationX += dx;
         this.rotationY += dy;
@@ -38,7 +39,8 @@ public class Entity
     }
 
     /**
-     * @param model the model to set
+     * @param model
+     *            the model to set
      */
     public void setModel(TexturedModel model) {
         this.model = model;
@@ -52,7 +54,8 @@ public class Entity
     }
 
     /**
-     * @param position the position to set
+     * @param position
+     *            the position to set
      */
     public void setPosition(Vector3f position) {
         this.position = position;
@@ -66,7 +69,8 @@ public class Entity
     }
 
     /**
-     * @param rotationX the rotationX to set
+     * @param rotationX
+     *            the rotationX to set
      */
     public void setRotationX(float rotationX) {
         this.rotationX = rotationX;
@@ -80,7 +84,8 @@ public class Entity
     }
 
     /**
-     * @param rotationY the rotationY to set
+     * @param rotationY
+     *            the rotationY to set
      */
     public void setRotationY(float rotationY) {
         this.rotationY = rotationY;
@@ -94,7 +99,8 @@ public class Entity
     }
 
     /**
-     * @param rotationZ the rotationZ to set
+     * @param rotationZ
+     *            the rotationZ to set
      */
     public void setRotationZ(float rotationZ) {
         this.rotationZ = rotationZ;
@@ -108,7 +114,8 @@ public class Entity
     }
 
     /**
-     * @param scale the scale to set
+     * @param scale
+     *            the scale to set
      */
     public void setScale(float scale) {
         this.scale = scale;

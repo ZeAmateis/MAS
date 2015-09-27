@@ -21,7 +21,7 @@ public class MathUtils
         Matrix4f.scale(new Vector3f(scale, scale, scale), m, m);
         return m;
     }
-    
+
     public static Matrix4f createViewMatrix(Camera c) {
         Matrix4f m = new Matrix4f();
         m.setIdentity();
