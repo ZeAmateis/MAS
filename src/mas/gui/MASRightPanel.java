@@ -9,6 +9,7 @@ import java.awt.event.MouseWheelListener;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -43,9 +44,12 @@ public class MASRightPanel extends JPanel
 
     private void initGui() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+
         this.initRotationPanel();
+        this.add(Box.createRigidArea(new Dimension(20, 20)));
         this.initPositionPanel();
+        this.add(Box.createRigidArea(new Dimension(20, 20)));
+        this.initSizePanel();
     }
 
     private void initRotationPanel() {
@@ -97,11 +101,11 @@ public class MASRightPanel extends JPanel
         rotPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), MASLang.translate("panel.rotation")));
         this.add(rotPanel);
     }
-    
+
     private void initPositionPanel() {
         JPanel posPanel = new JPanel();
         posPanel.setLayout(new BoxLayout(posPanel, BoxLayout.X_AXIS));
-        
+
         JFormattedTextField f = new JFormattedTextField(new DecimalFormat("0.000"));
         f.setValue(0);
         posPanel.add(f);
@@ -111,10 +115,23 @@ public class MASRightPanel extends JPanel
         JFormattedTextField f2 = new JFormattedTextField(new DecimalFormat("0.000"));
         f2.setValue(0);
         posPanel.add(f2);
-        
+
         posPanel.setMaximumSize(new Dimension(800, 60));
         posPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), MASLang.translate("panel.position")));
         this.add(posPanel);
+    }
+
+    private void initSizePanel() {
+        JPanel sizePanel = new JPanel();
+        sizePanel.setLayout(new BoxLayout(sizePanel, BoxLayout.X_AXIS));
+
+        sizePanel.add(new JSpinner());
+        sizePanel.add(new JSpinner());
+        sizePanel.add(new JSpinner());
+
+        sizePanel.setMaximumSize(new Dimension(800, 50));
+        sizePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), MASLang.translate("panel.size")));
+        this.add(sizePanel);
     }
 
     public static final class SliderSpinnerListener implements ChangeListener
