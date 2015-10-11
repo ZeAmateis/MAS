@@ -4,12 +4,16 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import mas.MAS;
+import mas.config.IKeyCallback;
 import mas.entity.Entity;
 import mas.render.model.RawModel;
 import mas.render.model.TexturedModel;
@@ -92,6 +96,19 @@ public class ThreadRendering extends Thread
             while (!Display.isCloseRequested() && mas.isRunning()) {
                 dim = mas.getNewCanvasSize().getAndSet(null);
                 if (dim != null) GL11.glViewport(0, 0, dim.width, dim.height);
+
+                while (Keyboard.next()) {
+                    if (Keyboard.getEventKeyState()) {
+                        for (IKeyCallback c : MAS.getMAS().getGLKeyListeners()) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!c.keyPressed(Keyboard.getEventKey())) MAS.getMAS().removeListener(c);
+                                }
+                            });
+                        }
+                    }
+                }
 
                 camera.move();
                 addTerrain(terrain);

@@ -92,6 +92,8 @@ public class MASMenuBar extends JMenuBar implements ActionListener
     public JMenuItem createAltMenuItem(String text, int key) {
         JMenuItem j = new JMenuItem(text, key);
         j.setAccelerator(KeyStroke.getKeyStroke(key, ActionEvent.ALT_MASK));
+        j.setMnemonic(key);
+        j.setDisplayedMnemonicIndex(0);
         j.addActionListener(this);
         return j;
     }
@@ -119,6 +121,9 @@ public class MASMenuBar extends JMenuBar implements ActionListener
             browse("http://scarex.fr");
         } else if (e.getSource() == this.langProjectItem) {
             browse("https://github.com/SCAREXgaming/MASLang");
+        } else if (e.getSource() == this.preferencesItem) {
+            PreferencesFrame frame = new PreferencesFrame();
+            frame.setVisible(true);
         }
     }
 

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,6 +24,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
+import mas.config.IKeyCallback;
 import mas.gui.MASLeftPanel;
 import mas.gui.MASMenuBar;
 import mas.gui.MASRightPanel;
@@ -37,7 +39,10 @@ public class MAS extends JFrame
 {
     private static final long serialVersionUID = -285116092617886296L;
     private static MAS INSTANCE;
+    public static final String VERSION = "=masversion=";
+    public static final boolean DEBUG = "%DEBUG%" == "%" + "DEBUG%";
     private boolean isRunning = true;
+    private ArrayList<IKeyCallback> keyListeners = new ArrayList<IKeyCallback>();
     public static File LOGS_FOLDER;
     public static final SimpleDateFormat SIMPLE_TIME = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
     public static final Thread.UncaughtExceptionHandler EXCEPTION_HANDLER = new Thread.UncaughtExceptionHandler() {
@@ -186,5 +191,26 @@ public class MAS extends JFrame
      */
     public Canvas getModelCanvas() {
         return modelCanvas;
+    }
+    
+    /**
+     * Register an OpenGL key listener
+     */
+    public void registerKeyListener(IKeyCallback callback) {
+        this.keyListeners.add(callback);
+    }
+    
+    /**
+     * Remove a specific listener
+     */
+    public void removeListener(Object o) {
+        this.keyListeners.remove(o);
+    }
+    
+    /**
+     * @return keyListeners
+     */
+    public ArrayList<IKeyCallback> getGLKeyListeners() {
+        return this.keyListeners;
     }
 }

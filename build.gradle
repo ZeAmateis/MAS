@@ -7,6 +7,7 @@ group 'mas'
 version '1.0'
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 jar {
   manifest { 
@@ -57,15 +58,25 @@ task processVersion(type: Copy) {
     filter(ReplaceTokens, tokens: ['version': version])
     // Use a closure to filter each line
     filter { String line ->
-        ("$line".replaceAll('"=masversion="', '"'+version+'"'))
+        line = line.replaceAll('"=masversion="', '"'+version+'"')
+        line = line.replaceAll('"%DEBUG%"', '"NOPE"')
     }
 }
+
+task cleanFilteredDir(type: Delete) {
+    delete filteredSourceDir
+}
+processVersion.dependsOn('cleanFilteredDir')
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
 
 //force UTF-8 to the compileJava task
-compileJava.options.encoding = 'UTF-8'
+//compileJava.options.encoding = 'UTF-8'
+compileJava {
+    options.encoding = 'UTF-8'
+    source = filteredSourceDir
+}
 
 compileJava.dependsOn processVersion

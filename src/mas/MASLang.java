@@ -2,8 +2,9 @@ package mas;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
@@ -38,9 +39,11 @@ public class MASLang
             }
             return;
         } else {
-            Thread t = new Thread(new LangCheckRunnable(langFolder, l));
-            t.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
-            t.start();
+            if (!MAS.DEBUG) {
+                Thread t = new Thread(new LangCheckRunnable(langFolder, l));
+                t.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+                t.start();
+            }
         }
     }
 
@@ -51,7 +54,7 @@ public class MASLang
 
     public static HashMap<String, String> parseFile(File f) {
         HashMap<String, String> map = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"))) {
             String l;
             while ((l = br.readLine()) != null) {
                 int i;
@@ -71,6 +74,6 @@ public class MASLang
     }
 
     public static String translate(String key, Object ... params) {
-        return String.format(langMap != null && langMap.containsKey(key) ? langMap.get(key) : (enMap.containsKey(key) ? enMap.get(key) : key));
+        return String.format(langMap != null && langMap.containsKey(key) ? langMap.get(key) : (enMap.containsKey(key) ? enMap.get(key) : key), params);
     }
 }
