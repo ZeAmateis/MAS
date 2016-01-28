@@ -3,6 +3,8 @@ package mas.config;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.swing.DefaultCellEditor;
@@ -78,11 +80,44 @@ public class SimpleKeyBindingGLDescConfig implements IMASConfig
                 value, value });
     }
 
+    @Override
+    public void saveConfig() {
+        ArrayList<String> lines = new ArrayList<String>();
+        configMap.forEach((k, v) -> {
+            lines.add(k + "=" + this.getKeyValue(k));
+        });
+        try {
+            this.saveLinesToConfigFile(lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Couldn't save configuration into the disk !", "Configuration not saved", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    @Override
+    public void readConfig() {
+        try {
+            this.forEachLineSplitInConfigFile(s -> {
+                if (s.length >= 2 && this.configMap.containsKey(s[0])) {
+                    Object[] o = this.configMap.get(s[0]);
+                    try {
+                        int i = Integer.parseInt(s[1]);
+                        o[2] = i;
+                        this.configMap.put(s[0], o);
+                    } catch (NumberFormatException e) {}
+                }
+            } , '=');
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Couldn't save configuration into the disk !", "Configuration not saved", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     public class ConfigModel extends DefaultTableModel
     {
         private static final long serialVersionUID = -4830748003353664206L;
         protected String[] colNames = new String[2];
-        
+
         public ConfigModel() {
             super();
             colNames[0] = MASLang.translate("config.key");
@@ -171,6 +206,7 @@ public class SimpleKeyBindingGLDescConfig implements IMASConfig
                 o[2] = key;
                 configMap.put(k, o);
                 parentFrame.setState(JFrame.NORMAL);
+                saveConfig();
                 break;
             case 1:
                 return true;

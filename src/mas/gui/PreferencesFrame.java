@@ -49,5 +49,8 @@ public class PreferencesFrame extends JFrame
 
     public static void registerConfig(IMASConfig config) {
         configMap.put(config.getName(), config);
+        configMap.forEach((key, conf) -> {
+            conf.readConfig();
+        });
     }
 }

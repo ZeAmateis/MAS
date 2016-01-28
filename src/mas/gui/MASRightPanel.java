@@ -21,6 +21,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import mas.MASLang;
+import mas.utils.JframeUtils;
 
 /**
  * @author SCAREX
@@ -40,6 +41,7 @@ public class MASRightPanel extends JPanel
         super();
 
         this.initGui();
+        JframeUtils.changeComponentsState(this, false);
     }
 
     private void initGui() {

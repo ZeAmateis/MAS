@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 
+import mas.MASMainConfig.EnumMainConfig;
 import mas.utils.IOUtils;
 
 /**
@@ -40,9 +41,11 @@ public class MASLang
             return;
         } else {
             if (!MAS.DEBUG) {
-                Thread t = new Thread(new LangCheckRunnable(langFolder, l));
-                t.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
-                t.start();
+                if (MASMainConfig.getValueAsBoolean(EnumMainConfig.CHECK_FOR_UPDATES)) {
+                    Thread t = new Thread(new LangCheckRunnable(langFolder, l));
+                    t.setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+                    t.start();
+                }
             }
         }
     }

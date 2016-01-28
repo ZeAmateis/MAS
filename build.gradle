@@ -35,11 +35,6 @@ sourceSets {
             srcDirs = ["src/"]
         }
     }
-    filtered {
-        java {
-            srcDirs = [filteredSourceDir]
-        }
-    }
 }
 
 dependencies {
@@ -66,7 +61,6 @@ task processVersion(type: Copy) {
 task cleanFilteredDir(type: Delete) {
     delete filteredSourceDir
 }
-processVersion.dependsOn('cleanFilteredDir')
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
@@ -80,3 +74,4 @@ compileJava {
 }
 
 compileJava.dependsOn processVersion
+compileJava.finalizedBy cleanFilteredDir

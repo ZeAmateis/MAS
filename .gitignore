@@ -63,6 +63,7 @@ $RECYCLE.BIN/
 build/
 .classpath
 .metadata
+run/
 
 ## IDEA
 .idea/

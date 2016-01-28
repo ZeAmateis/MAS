@@ -24,12 +24,12 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
+import mas.MASMainConfig.EnumMainConfig;
 import mas.config.IKeyCallback;
 import mas.gui.MASLeftPanel;
 import mas.gui.MASMenuBar;
 import mas.gui.MASRightPanel;
 import mas.render.ThreadRendering;
-import mas.utils.SystemUtils;
 
 /**
  * @author SCAREX
@@ -89,10 +89,14 @@ public class MAS extends JFrame
     private AWTGLCanvas modelCanvas;
 
     private MASMenuBar menuBar = new MASMenuBar();
+    
+    public static File CONFIG_DIRECTORY;
 
     public static void main(String[] args) {
         try {
-            LOGS_FOLDER = new File(SystemUtils.getAppFolder("MAS"), "logs");
+            MASMainConfig.generateAndLoad();
+
+            LOGS_FOLDER = new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH), "logs");
             LOGS_FOLDER.mkdirs();
 
             File latestLogsFile = new File(LOGS_FOLDER, "latest_logs.log");
@@ -104,8 +108,11 @@ public class MAS extends JFrame
             Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
-            LWJGLSetup.load(SystemUtils.getAppFolder("MAS"));
-            MASLang.load(SystemUtils.getAppFolder("MAS"));
+            LWJGLSetup.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));
+            MASLang.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));
+            
+            CONFIG_DIRECTORY = new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH), "config");
+            CONFIG_DIRECTORY.mkdirs();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
@@ -192,21 +199,21 @@ public class MAS extends JFrame
     public Canvas getModelCanvas() {
         return modelCanvas;
     }
-    
+
     /**
      * Register an OpenGL key listener
      */
     public void registerKeyListener(IKeyCallback callback) {
         this.keyListeners.add(callback);
     }
-    
+
     /**
      * Remove a specific listener
      */
     public void removeListener(Object o) {
         this.keyListeners.remove(o);
     }
-    
+
     /**
      * @return keyListeners
      */

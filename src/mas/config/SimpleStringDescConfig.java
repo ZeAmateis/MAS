@@ -1,11 +1,14 @@
 package mas.config;
 
 import java.awt.Component;
+import java.io.IOException;
 import java.text.Format;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -94,6 +97,44 @@ public class SimpleStringDescConfig implements IMASConfig
                 value, value, format });
     }
 
+    @Override
+    public void saveConfig() {
+        ArrayList<String> lines = new ArrayList<String>();
+        configMap.forEach((k, v) -> {
+            lines.add(k + "=" + this.getStringValue(k));
+        });
+        try {
+            this.saveLinesToConfigFile(lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Couldn't save configuration into the disk !", "Configuration not saved", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    @Override
+    public void readConfig() {
+        try {
+            this.forEachLineSplitInConfigFile(s -> {
+                if (s.length >= 2 && this.configMap.containsKey(s[0])) {
+                    Object[] o = this.configMap.get(s[0]);
+                    Format f = getFormat(s[0]);
+                    if (f != null) {
+                        try {
+                            f.parseObject(s[1]);
+                            o[2] = s[1];
+                        } catch (ParseException e) {}
+                    } else {
+                        o[2] = s[1];
+                    }
+                    configMap.put(s[0], o);
+                }
+            } , '=');
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Couldn't save configuration into the disk !", "Configuration not saved", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     public class ConfigModel extends DefaultTableModel
     {
         private static final long serialVersionUID = -4830748003353664206L;
@@ -166,6 +207,7 @@ public class SimpleStringDescConfig implements IMASConfig
                     value[2] = s;
                     configMap.put(key, value);
                 }
+                saveConfig();
             }
             return super.getCellEditorValue();
         }
