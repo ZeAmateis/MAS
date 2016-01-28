@@ -2,4 +2,3 @@
 - block manipulation system
 - exportation system
 - axis draw
-- configuration system
