@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.URI;
+import java.util.ArrayList;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -13,6 +14,8 @@ import javax.swing.KeyStroke;
 
 import mas.MAS;
 import mas.MASLang;
+import mas.project.IMASProjectElement;
+import mas.project.MASProject;
 
 /**
  * @author SCAREX
@@ -28,6 +31,8 @@ public class MASMenuBar extends JMenuBar implements ActionListener
     private final JMenuItem newItem = createAltMenuItem(MASLang.translate("menu.file.new"), KeyEvent.VK_N);
     private final JMenuItem openItem = createAltMenuItem(MASLang.translate("menu.file.open"), KeyEvent.VK_O);
     private final JMenuItem quitItem = createAltMenuItem(MASLang.translate("menu.file.quit"), KeyEvent.VK_Q);
+    private final JMenuItem saveItem = createCtrlMenuItem(MASLang.translate("menu.file.save"), KeyEvent.VK_S);
+    private final JMenuItem saveAsItem = createAltMenuItem(MASLang.translate("menu.file.save_as"), KeyEvent.VK_S);
     // Edit
     private final JMenuItem undoItem = createCtrlMenuItem(MASLang.translate("menu.edit.undo"), KeyEvent.VK_Z);
     private final JMenuItem redoItem = createCtrlMenuItem(MASLang.translate("menu.edit.redo"), KeyEvent.VK_Y);
@@ -55,6 +60,11 @@ public class MASMenuBar extends JMenuBar implements ActionListener
 
         this.filesMenu.addSeparator();
 
+        this.filesMenu.add(this.saveItem);
+        this.filesMenu.add(this.saveAsItem);
+
+        this.filesMenu.addSeparator();
+
         this.filesMenu.add(this.quitItem);
 
         this.add(this.filesMenu);
@@ -66,6 +76,12 @@ public class MASMenuBar extends JMenuBar implements ActionListener
 
         this.editMenu.addSeparator();
 
+        this.deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent() != null) MAS.getMAS().getProject().removeElementInTree((IMASProjectElement) MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent());
+            }
+        });
         this.editMenu.add(this.deleteItem);
 
         this.editMenu.addSeparator();
@@ -124,6 +140,14 @@ public class MASMenuBar extends JMenuBar implements ActionListener
         } else if (e.getSource() == this.preferencesItem) {
             PreferencesFrame frame = new PreferencesFrame();
             frame.setVisible(true);
+        } else if (e.getSource() == this.saveItem) {
+            MAS.getMAS().getProject().saveProject();
+        } else if (e.getSource() == this.saveAsItem) {
+            MAS.getMAS().getProject().saveAsProject();
+        } else if (e.getSource() == this.openItem) {
+            MASProject.openFile();
+        } else if (e.getSource() == this.newItem) {
+            MAS.getMAS().setProject(new MASProject(MASLang.translate("menu.file.new"), new ArrayList<>()));
         }
     }
 

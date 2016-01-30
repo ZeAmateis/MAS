@@ -93,7 +93,7 @@ public class MAS extends JFrame
 
     private MASMenuBar menuBar = new MASMenuBar();
 
-    private static MASProject project;
+    private MASProject project;
 
     public static void main(String[] args) {
         try {
@@ -243,6 +243,8 @@ public class MAS extends JFrame
      */
     public void setProject(MASProject mproject) {
         project = mproject;
+        MAS.getMAS().getLEFT_PANEL().setModel(project.getTreeModel());
+        MAS.getMAS().getLEFT_PANEL().getTree().updateUI();
     }
 
     /**

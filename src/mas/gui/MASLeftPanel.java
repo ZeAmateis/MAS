@@ -134,4 +134,11 @@ public class MASLeftPanel extends JPanel
     public void setModel(TreeModel model) {
         this.tree.setModel(model);
     }
+
+    /**
+     * @return the tree
+     */
+    public JTree getTree() {
+        return tree;
+    }
 }
