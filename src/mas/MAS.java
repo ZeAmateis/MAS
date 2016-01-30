@@ -157,7 +157,7 @@ public class MAS extends JFrame
 
         this.initDisplay();
 
-        project = new MASProject("test", new ArrayList<IMASProjectElement>());
+        project = new MASProject(MASLang.translate("menu.file.new"), new ArrayList<IMASProjectElement>());
         LEFT_PANEL.setModel(project.getTreeModel());
     }
 

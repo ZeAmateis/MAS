@@ -53,7 +53,8 @@ public class MASProject
     }
 
     /**
-     * @param selectedEntity the selectedEntity to set
+     * @param selectedEntity
+     *            the selectedEntity to set
      */
     public void setSelectedEntity(Entity selectedEntity) {
         this.selectedEntity = selectedEntity;
@@ -91,6 +92,11 @@ public class MASProject
 
     public void removeElementInTree(IMASProjectElement element) {
         ((DefaultMutableTreeNode) element).removeFromParent();
+        this.treeModel.reload();
+    }
+
+    public void changeName(DefaultMutableTreeNode element, String name) {
+        element.setUserObject(name);
         this.treeModel.reload();
     }
 

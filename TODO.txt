@@ -1,4 +1,2 @@
-- project system
-- block manipulation system
 - exportation system
 - axis draw

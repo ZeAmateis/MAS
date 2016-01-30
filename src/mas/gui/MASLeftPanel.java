@@ -18,6 +18,7 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -25,6 +26,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.lwjgl.util.vector.Vector3f;
 
 import mas.MAS;
+import mas.MASLang;
 import mas.entity.Entity;
 import mas.project.IMASProjectElement;
 import mas.project.MASProjectDirectory;
@@ -59,7 +61,18 @@ public class MASLeftPanel extends JPanel
                     tree.setSelectionPath(path);
                     IMASProjectElement element = (IMASProjectElement) path.getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
-                    JMenuItem deleteItem = new JMenuItem("Delete");
+                    JMenuItem modifyItem = new JMenuItem(MASLang.translate("project.modify"));
+                    modifyItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"));
+                            if (s != null && !s.isEmpty()) {
+                                MAS.getMAS().getProject().changeName((DefaultMutableTreeNode) element, s);
+                            }
+                        }
+                    });
+                    popup.add(modifyItem);
+                    JMenuItem deleteItem = new JMenuItem(MASLang.translate("project.delete"));
                     deleteItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -68,23 +81,23 @@ public class MASLeftPanel extends JPanel
                     });
                     popup.add(deleteItem);
                     if (element instanceof MASProjectDirectory) {
-                        JMenu addMenu = new JMenu("add");
-                        JMenuItem dirItem = new JMenuItem("Directory");
+                        JMenu addMenu = new JMenu(MASLang.translate("project.add"));
+                        JMenuItem dirItem = new JMenuItem(MASLang.translate("project.directory"));
                         dirItem.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                String s = JOptionPane.showInputDialog(null, "Insert name :");
+                                String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"));
                                 if (s != null && !s.isEmpty()) {
                                     MAS.getMAS().getProject().addElement((MASProjectDirectory) element, new MASProjectDirectory(s, new ArrayList<>()));
                                 }
                             }
                         });
                         addMenu.add(dirItem);
-                        JMenuItem entityItem = new JMenuItem("Entity");
+                        JMenuItem entityItem = new JMenuItem(MASLang.translate("project.entity"));
                         entityItem.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                String s = JOptionPane.showInputDialog(null, "Insert name :");
+                                String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"));
                                 if (s != null && !s.isEmpty()) {
                                     MAS.getMAS().getProject().addElement((MASProjectDirectory) element, new Entity(s, ThreadRendering.TEXTURED_MODEL_TEST, new Vector3f(), 0, 0, 0, new Vector3f(1F, 1F, 1F)));
                                 }

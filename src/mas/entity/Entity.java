@@ -1,7 +1,5 @@
 package mas.entity;
 
-import java.util.List;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -128,15 +126,5 @@ public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
      */
     public void setScale(Vector3f scale) {
         this.scale = scale;
-    }
-
-    @Override
-    public String getDisplayedName() {
-        return this.name;
-    }
-
-    @Override
-    public List<IMASProjectElement> getElements() {
-        return null;
     }
 }
