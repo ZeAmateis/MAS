@@ -1,22 +1,31 @@
 package mas.entity;
 
+import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.lwjgl.util.vector.Vector3f;
 
+import mas.project.IMASProjectElement;
 import mas.render.model.TexturedModel;
 
 /**
  * @author SCAREX
  *
  */
-public class Entity
+public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
 {
+    private static final long serialVersionUID = -6973246685675901807L;
+    protected String name;
     protected TexturedModel model;
     protected Vector3f position;
-    protected float rotationX,
-            rotationY, rotationZ;
-    protected float scale;
+    protected int rotationX, rotationY,
+            rotationZ;
+    protected Vector3f scale;
 
-    public Entity(TexturedModel model, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
+    public Entity(String name, TexturedModel model, Vector3f position, int rotationX, int rotationY, int rotationZ, Vector3f scale) {
+        super(name);
+        this.name = name;
         this.model = model;
         this.position = position;
         this.rotationX = rotationX;
@@ -64,7 +73,7 @@ public class Entity
     /**
      * @return the rotationX
      */
-    public float getRotationX() {
+    public int getRotationX() {
         return rotationX;
     }
 
@@ -72,14 +81,14 @@ public class Entity
      * @param rotationX
      *            the rotationX to set
      */
-    public void setRotationX(float rotationX) {
+    public void setRotationX(int rotationX) {
         this.rotationX = rotationX;
     }
 
     /**
      * @return the rotationY
      */
-    public float getRotationY() {
+    public int getRotationY() {
         return rotationY;
     }
 
@@ -87,14 +96,14 @@ public class Entity
      * @param rotationY
      *            the rotationY to set
      */
-    public void setRotationY(float rotationY) {
+    public void setRotationY(int rotationY) {
         this.rotationY = rotationY;
     }
 
     /**
      * @return the rotationZ
      */
-    public float getRotationZ() {
+    public int getRotationZ() {
         return rotationZ;
     }
 
@@ -102,14 +111,14 @@ public class Entity
      * @param rotationZ
      *            the rotationZ to set
      */
-    public void setRotationZ(float rotationZ) {
+    public void setRotationZ(int rotationZ) {
         this.rotationZ = rotationZ;
     }
 
     /**
      * @return the scale
      */
-    public float getScale() {
+    public Vector3f getScale() {
         return scale;
     }
 
@@ -117,7 +126,17 @@ public class Entity
      * @param scale
      *            the scale to set
      */
-    public void setScale(float scale) {
+    public void setScale(Vector3f scale) {
         this.scale = scale;
+    }
+
+    @Override
+    public String getDisplayedName() {
+        return this.name;
+    }
+
+    @Override
+    public List<IMASProjectElement> getElements() {
+        return null;
     }
 }

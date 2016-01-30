@@ -10,7 +10,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
 
 import mas.MAS;
 import mas.config.IKeyCallback;
@@ -25,7 +24,42 @@ import mas.shaders.TerrainShader;
 public class ThreadRendering extends Thread
 {
     private final MAS mas;
+    public static final float[] vertices = {
+            -0.5f, 0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f, 0.5f };
+    public static final float[] textureCoords = {
+            0, 0, 0, 1, 1, 1, 1, 0, 0,
+            0, 0, 1, 1, 1, 1, 0, 0, 0,
+            0, 1, 1, 1, 1, 0, 0, 0, 0,
+            1, 1, 1, 1, 0, 0, 0, 0, 1,
+            1, 1, 1, 0, 0, 0, 0, 1, 1,
+            1, 1, 0 };
+    public static final int[] indices = {
+            0, 1, 3, 3, 1, 2, 4, 5, 7,
+            7, 5, 6, 8, 9, 11, 11, 9,
+            10, 12, 13, 15, 15, 13, 14,
+            16, 17, 19, 19, 17, 18, 20,
+            21, 23, 23, 21, 22 };
     private List<Terrain> terrains = new ArrayList<Terrain>();
+    public static RawModel CUBE_MODEL;
+    public static ModelTexture CUBE_TEXTURE_TEST;
+    public static TexturedModel TEXTURED_MODEL_TEST;
 
     public ThreadRendering(MAS mas) {
         super("Rendering");
@@ -44,52 +78,9 @@ public class ThreadRendering extends Thread
             Camera camera = new Camera();
             camera.getPosition().translate(0.0F, 1.5F, 0.0F);
 
-            float[] vertices = { -0.5f,
-                    0.5f, -0.5f, -0.5f,
-                    -0.5f, -0.5f, 0.5f,
-                    -0.5f, -0.5f, 0.5f,
-                    0.5f, -0.5f, -0.5f,
-                    0.5f, 0.5f, -0.5f,
-                    -0.5f, 0.5f, 0.5f,
-                    -0.5f, 0.5f, 0.5f,
-                    0.5f, 0.5f, 0.5f,
-                    0.5f, -0.5f, 0.5f,
-                    -0.5f, -0.5f, 0.5f,
-                    -0.5f, 0.5f, 0.5f,
-                    0.5f, 0.5f, -0.5f,
-                    0.5f, -0.5f, -0.5f,
-                    -0.5f, -0.5f, -0.5f,
-                    -0.5f, 0.5f, -0.5f,
-                    0.5f, 0.5f, -0.5f,
-                    0.5f, 0.5f, -0.5f,
-                    0.5f, -0.5f, 0.5f,
-                    0.5f, -0.5f, 0.5f,
-                    0.5f, 0.5f, -0.5f,
-                    -0.5f, 0.5f, -0.5f,
-                    -0.5f, -0.5f, 0.5f,
-                    -0.5f, -0.5f, 0.5f,
-                    -0.5f, 0.5f };
-            float[] textureCoords = { 0,
-                    0, 0, 1, 1, 1, 1, 0,
-                    0, 0, 0, 1, 1, 1, 1,
-                    0, 0, 0, 0, 1, 1, 1,
-                    1, 0, 0, 0, 0, 1, 1,
-                    1, 1, 0, 0, 0, 0, 1,
-                    1, 1, 1, 0, 0, 0, 0,
-                    1, 1, 1, 1, 0 };
-            int[] indices = { 0, 1, 3,
-                    3, 1, 2, 4, 5, 7, 7,
-                    5, 6, 8, 9, 11, 11,
-                    9, 10, 12, 13, 15,
-                    15, 13, 14, 16, 17,
-                    19, 19, 17, 18, 20,
-                    21, 23, 23, 21,
-                    22 };
-            RawModel model = ModelLoader.loadToVAO(vertices, textureCoords, indices);
-            ModelTexture texture = new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/test_texture_by_Whathefrench.png")));
-            TexturedModel tModel = new TexturedModel(model, texture);
-
-            Entity entity = new Entity(tModel, new Vector3f(0.0F, 1.0F, -4.0F), 0.0F, 0.0F, 0.0F, 1.0F);
+            CUBE_MODEL = ModelLoader.loadToVAO(vertices, textureCoords, indices);
+            CUBE_TEXTURE_TEST = new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/test_texture_by_Whathefrench.png")));
+            TEXTURED_MODEL_TEST = new TexturedModel(CUBE_MODEL, CUBE_TEXTURE_TEST);
 
             Terrain terrain = new Terrain(-0.9F, -0.9F, new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/terrain.png"))));
 
@@ -118,7 +109,9 @@ public class ThreadRendering extends Thread
                 shader.loadViewMatrix(camera);
                 Renderer.initProjectionMatrix();
 
-                Renderer.renderEntity(entity, shader);
+                for (Entity e : MAS.getMAS().getProject().getAllEntities()) {
+                    Renderer.renderEntity(e, shader);
+                }
 
                 shader.stop();
 

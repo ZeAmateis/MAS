@@ -7,7 +7,7 @@ import java.awt.Container;
  * @author SCAREX
  *
  */
-public class JframeUtils
+public class SwingUtils
 {
     public static void changeComponentsState(Container container, boolean enable) {
         for (Component comp : container.getComponents()) {

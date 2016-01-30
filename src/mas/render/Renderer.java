@@ -69,7 +69,7 @@ public class Renderer
             GL20.glEnableVertexAttribArray(0);
             GL20.glEnableVertexAttribArray(1);
 
-            Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(new Vector3f(t.getX(), 0.0F, t.getZ()), 0.0F, 0.0F, 0.0F, 1.0F);
+            Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(new Vector3f(t.getX(), 0.0F, t.getZ()), 0.0F, 0.0F, 0.0F, new Vector3f(1F, 1F, 1F));
             shader.loadTransformationMatrix(transformationMatrix);
 
             shader.loadProjectionMatrix(Renderer.projectionMatrix);

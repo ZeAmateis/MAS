@@ -29,6 +29,8 @@ import mas.config.IKeyCallback;
 import mas.gui.MASLeftPanel;
 import mas.gui.MASMenuBar;
 import mas.gui.MASRightPanel;
+import mas.project.IMASProjectElement;
+import mas.project.MASProject;
 import mas.render.ThreadRendering;
 
 /**
@@ -70,6 +72,7 @@ public class MAS extends JFrame
     public static final PrintStream LOG_BASE_STREAM = System.out;
     public static final PrintStream LOG_BASE_ERR_STREAM = System.err;
     public static PrintStream LOG_FILE_STREAM;
+    public static File CONFIG_DIRECTORY;
     public static final OutputStream LOG_STREAM = new OutputStream() {
         @Override
         public void write(int b) throws IOException {
@@ -89,8 +92,8 @@ public class MAS extends JFrame
     private AWTGLCanvas modelCanvas;
 
     private MASMenuBar menuBar = new MASMenuBar();
-    
-    public static File CONFIG_DIRECTORY;
+
+    private static MASProject project;
 
     public static void main(String[] args) {
         try {
@@ -110,7 +113,7 @@ public class MAS extends JFrame
             // setup lwjgl natives
             LWJGLSetup.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));
             MASLang.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));
-            
+
             CONFIG_DIRECTORY = new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH), "config");
             CONFIG_DIRECTORY.mkdirs();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | UnsupportedLookAndFeelException e) {
@@ -122,6 +125,9 @@ public class MAS extends JFrame
     public static MAS getMAS() {
         return INSTANCE;
     }
+
+    private final MASLeftPanel LEFT_PANEL;
+    private final MASRightPanel RIGHT_PANEL;
 
     private MAS() {
         this.setTitle("MAS");
@@ -139,17 +145,20 @@ public class MAS extends JFrame
 
         this.initCanvas();
 
-        MASLeftPanel leftPanel = new MASLeftPanel();
-        this.add(leftPanel, BorderLayout.WEST);
+        LEFT_PANEL = new MASLeftPanel();
+        this.add(LEFT_PANEL, BorderLayout.WEST);
 
-        MASRightPanel rightPanel = new MASRightPanel();
-        this.add(rightPanel, BorderLayout.EAST);
+        RIGHT_PANEL = new MASRightPanel();
+        this.add(RIGHT_PANEL, BorderLayout.EAST);
 
         this.setMinimumSize(new Dimension(600, 600));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
         this.initDisplay();
+
+        project = new MASProject("test", new ArrayList<IMASProjectElement>());
+        LEFT_PANEL.setModel(project.getTreeModel());
     }
 
     private void initCanvas() {
@@ -219,5 +228,34 @@ public class MAS extends JFrame
      */
     public ArrayList<IKeyCallback> getGLKeyListeners() {
         return this.keyListeners;
+    }
+
+    /**
+     * @return the project
+     */
+    public MASProject getProject() {
+        return project;
+    }
+
+    /**
+     * @param project
+     *            the project to set
+     */
+    public void setProject(MASProject mproject) {
+        project = mproject;
+    }
+
+    /**
+     * @return the lEFT_PANEL
+     */
+    public MASLeftPanel getLEFT_PANEL() {
+        return LEFT_PANEL;
+    }
+
+    /**
+     * @return the rIGHT_PANEL
+     */
+    public MASRightPanel getRIGHT_PANEL() {
+        return RIGHT_PANEL;
     }
 }
