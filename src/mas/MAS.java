@@ -109,6 +109,10 @@ public class MAS extends JFrame
             System.setErr(new PrintStream(LOG_ERR_STREAM));
 
             Thread.currentThread().setUncaughtExceptionHandler(MAS.EXCEPTION_HANDLER);
+
+            System.out.println("Starting MAS " + MAS.VERSION);
+            System.out.println("Compiler version : " + MASProject.COMPILER_VERSION);
+
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // setup lwjgl natives
             LWJGLSetup.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));

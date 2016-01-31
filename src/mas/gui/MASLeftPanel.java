@@ -116,8 +116,8 @@ public class MASLeftPanel extends JPanel
             public void valueChanged(TreeSelectionEvent e) {
                 if (e.getPath().getLastPathComponent() instanceof Entity) {
                     MAS.getMAS().getProject().setSelectedEntity((Entity) e.getPath().getLastPathComponent());
-                    SwingUtils.changeComponentsState(MAS.getMAS().getRIGHT_PANEL(), true);
                     MAS.getMAS().getRIGHT_PANEL().loadValuesForEntity(MAS.getMAS().getProject().getSelectedEntity());
+                    SwingUtils.changeComponentsState(MAS.getMAS().getRIGHT_PANEL(), true);
                 } else {
                     SwingUtils.changeComponentsState(MAS.getMAS().getRIGHT_PANEL(), false);
                 }

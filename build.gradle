@@ -5,6 +5,7 @@ def filteredSourceDir = file("${buildDir}/filtered")
 
 group 'mas'
 version '1.0'
+def compilerVersion = '1.0'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -55,6 +56,7 @@ task processVersion(type: Copy) {
     filter { String line ->
         line = line.replaceAll('"=masversion="', '"'+version+'"')
         line = line.replaceAll('"%DEBUG%"', '"NOPE"')
+        line = line.replaceAll('"=compiler-version="', '"' + compilerVersion + '"')
     }
 }
 

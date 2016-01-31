@@ -31,14 +31,12 @@ import mas.render.ThreadRendering;
 public class MASProject
 {
     public static final String COMPILER_VERSION = "=compiler-version=";
-    protected String name;
     protected String path;
     protected DefaultTreeModel treeModel;
     protected Entity selectedEntity;
 
     public MASProject(String name, List<IMASProjectElement> elements) {
-        this.name = name;
-        this.treeModel = new MASProjectTreeModel(new MASProjectDirectory(this.getName(), elements));
+        this.treeModel = new MASProjectTreeModel(new MASProjectDirectory(name, elements));
     }
 
     public MASProject(String name, MASProjectDirectory root) {
@@ -50,7 +48,7 @@ public class MASProject
      * @return the name
      */
     public String getName() {
-        return name;
+        return (String) ((MASProjectDirectory) this.treeModel.getRoot()).getUserObject();
     }
 
     /**
@@ -58,7 +56,8 @@ public class MASProject
      *            the name to set
      */
     public void setName(String name) {
-        this.name = name;
+        ((MASProjectDirectory) this.treeModel.getRoot()).setUserObject(name);
+        this.treeModel.reload();
     }
 
     /**
@@ -116,14 +115,14 @@ public class MASProject
     public byte[] compileProject() throws IOException {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         writeUTF8String(b, COMPILER_VERSION);
-        writeUTF8String(b, this.name);
+        writeUTF8String(b, this.getName());
         writeElement(b, (IMASProjectElement) this.treeModel.getRoot());
         return b.toByteArray();
     }
 
     public void saveProject() {
         File f;
-        if (this.path != null && !this.path.isEmpty() && !(f = new File(path)).isDirectory() && f.getName().endsWith(this.name + ".mas")) {
+        if (this.path != null && !this.path.isEmpty() && !(f = new File(path)).isDirectory() && f.getName().endsWith(this.getName() + ".mas")) {
             long t = System.currentTimeMillis();
             try {
                 Files.write(f.toPath(), compileProject());
@@ -133,7 +132,7 @@ public class MASProject
             System.out.println("Time to compile : " + (System.currentTimeMillis() - t));
         } else {
             JFileChooser fc = new JFileChooser(this.path);
-            f = new File("", this.name + ".mas");
+            f = new File("", this.getName() + ".mas");
             fc.setSelectedFile(f);
             fc.setFileFilter(new FileNameExtensionFilter("MAS File", "mas"));
             int ret = fc.showSaveDialog(MAS.getMAS());
@@ -153,7 +152,7 @@ public class MASProject
 
     public void saveAsProject() {
         JFileChooser fc = new JFileChooser(this.path);
-        File f = this.path != null && !this.path.isEmpty() && this.path.endsWith(this.name + ".mas") ? new File(this.path) : new File("", this.name + ".mas");
+        File f = this.path != null && !this.path.isEmpty() && this.path.endsWith(this.getName() + ".mas") ? new File(this.path) : new File("", this.getName() + ".mas");
         fc.setSelectedFile(f);
         fc.setFileFilter(new FileNameExtensionFilter("MAS File", "mas"));
         int ret = fc.showSaveDialog(MAS.getMAS());
@@ -231,7 +230,9 @@ public class MASProject
         if (ret == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
             try {
-                MAS.getMAS().setProject(decompile(Files.readAllBytes(f.toPath())));
+                MASProject project = decompile(Files.readAllBytes(f.toPath()));
+                project.setPath(f.getAbsolutePath());
+                MAS.getMAS().setProject(project);
             } catch (IOException e) {
                 e.printStackTrace();
             }

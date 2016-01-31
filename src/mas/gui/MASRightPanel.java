@@ -197,7 +197,7 @@ public class MASRightPanel extends JPanel
             }
         });
         sizePanel.add(this.ySizeSpinner);
-        this.xSizeSpinner.addChangeListener(new ChangeListener() {
+        this.zSizeSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getScale().setZ(numberToFloatValue(zSizeSpinner.getValue()));
