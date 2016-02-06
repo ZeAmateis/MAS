@@ -34,6 +34,7 @@ public class PreferencesFrame extends JFrame
     private void initFrame() {
         JTabbedPane tp = new JTabbedPane(JTabbedPane.LEFT);
         for (Entry<String, IMASConfig> e : configMap.entrySet()) {
+            e.getValue().readConfig();
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             JLabel title = new JLabel(e.getValue().getLocalizedName());
@@ -49,8 +50,5 @@ public class PreferencesFrame extends JFrame
 
     public static void registerConfig(IMASConfig config) {
         configMap.put(config.getName(), config);
-        configMap.forEach((key, conf) -> {
-            conf.readConfig();
-        });
     }
 }
