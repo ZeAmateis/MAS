@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,6 +124,16 @@ public class MAS extends JFrame
             e.printStackTrace();
         }
         INSTANCE = new MAS();
+        File f;
+        if (args.length > 0 && (f = new File(args[0])).exists() && f.getName().endsWith(".mas")) {
+            MAS.getMAS().getStateBar().setLabel("Waiting for render to initialize");
+            while (!ThreadRendering.isRenderStarted) {}
+            try {
+                INSTANCE.setProject(MASProject.decompile(Files.readAllBytes(f.toPath())));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static MAS getMAS() {

@@ -61,6 +61,7 @@ public class ThreadRendering extends Thread
     public static RawModel CUBE_MODEL;
     public static ModelTexture CUBE_TEXTURE_TEST;
     public static TexturedModel TEXTURED_MODEL_TEST;
+    public static volatile boolean isRenderStarted = false;
 
     public ThreadRendering(MAS mas) {
         super("Rendering");
@@ -88,6 +89,7 @@ public class ThreadRendering extends Thread
             Terrain terrain = new Terrain(-0.9F, -0.9F, new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/terrain.png"))));
             addTerrain(terrain);
 
+            isRenderStarted = true;
             while (!Display.isCloseRequested() && mas.isRunning()) {
                 dim = mas.getNewCanvasSize().getAndSet(null);
                 if (dim != null) GL11.glViewport(0, 0, dim.width, dim.height);
