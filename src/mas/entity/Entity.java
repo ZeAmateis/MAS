@@ -14,22 +14,25 @@ import mas.render.model.TexturedModel;
 public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
 {
     private static final long serialVersionUID = -6973246685675901807L;
-    protected String name;
     protected TexturedModel model;
     protected Vector3f position;
-    protected int rotationX, rotationY,
-            rotationZ;
-    protected Vector3f scale;
+    protected Vector3f offset;
+    protected int rotationX,
+            rotationY, rotationZ;
+    protected int scaleX, scaleY,
+            scaleZ;
 
-    public Entity(String name, TexturedModel model, Vector3f position, int rotationX, int rotationY, int rotationZ, Vector3f scale) {
+    public Entity(String name, TexturedModel model, Vector3f position, Vector3f offset, int rotationX, int rotationY, int rotationZ, int scaleX, int scaleY, int scaleZ) {
         super(name);
-        this.name = name;
         this.model = model;
         this.position = position;
+        this.offset = offset;
         this.rotationX = rotationX;
         this.rotationY = rotationY;
         this.rotationZ = rotationZ;
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
     }
 
     public void increaseRotation(float dx, float dy, float dz) {
@@ -66,6 +69,21 @@ public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
      */
     public void setPosition(Vector3f position) {
         this.position = position;
+    }
+
+    /**
+     * @return the offset
+     */
+    public Vector3f getOffset() {
+        return offset;
+    }
+
+    /**
+     * @param offset
+     *            the offset to set
+     */
+    public void setOffset(Vector3f offset) {
+        this.offset = offset;
     }
 
     /**
@@ -114,17 +132,47 @@ public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
     }
 
     /**
-     * @return the scale
+     * @return the scaleX
      */
-    public Vector3f getScale() {
-        return scale;
+    public int getScaleX() {
+        return scaleX;
     }
 
     /**
-     * @param scale
-     *            the scale to set
+     * @param scaleX
+     *            the scaleX to set
      */
-    public void setScale(Vector3f scale) {
-        this.scale = scale;
+    public void setScaleX(int scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    /**
+     * @return the scaleY
+     */
+    public int getScaleY() {
+        return scaleY;
+    }
+
+    /**
+     * @param scaleY
+     *            the scaleY to set
+     */
+    public void setScaleY(int scaleY) {
+        this.scaleY = scaleY;
+    }
+
+    /**
+     * @return the scaleZ
+     */
+    public int getScaleZ() {
+        return scaleZ;
+    }
+
+    /**
+     * @param scaleZ
+     *            the scaleZ to set
+     */
+    public void setScaleZ(int scaleZ) {
+        this.scaleZ = scaleZ;
     }
 }

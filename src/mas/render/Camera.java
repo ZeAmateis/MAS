@@ -94,4 +94,25 @@ public class Camera
     public float getRoll() {
         return roll;
     }
+
+    /**
+     * @param rotPitch the rotPitch to set
+     */
+    public void setRotPitch(float rotPitch) {
+        this.rotPitch = rotPitch;
+    }
+
+    /**
+     * @param rotYaw the rotYaw to set
+     */
+    public void setRotYaw(float rotYaw) {
+        this.rotYaw = rotYaw;
+    }
+
+    /**
+     * @param roll the roll to set
+     */
+    public void setRoll(float roll) {
+        this.roll = roll;
+    }
 }

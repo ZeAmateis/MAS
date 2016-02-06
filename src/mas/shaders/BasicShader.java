@@ -12,6 +12,7 @@ import mas.utils.MathUtils;
  */
 public class BasicShader extends ShaderProgram
 {
+    protected int loc_offsetMatrix;
     protected int loc_transformationMatrix;
     protected int loc_projectionMatrix;
     protected int loc_viewMatrix;
@@ -28,9 +29,14 @@ public class BasicShader extends ShaderProgram
 
     @Override
     protected void getAllUniformLocations() {
+        this.loc_offsetMatrix = super.getUniformLocation("offsetMatrix");
         this.loc_transformationMatrix = super.getUniformLocation("transformationMatrix");
         this.loc_projectionMatrix = super.getUniformLocation("projectionMatrix");
         this.loc_viewMatrix = super.getUniformLocation("viewMatrix");
+    }
+    
+    public void loadOffsetMatrix(Matrix4f matrix) {
+        super.loadMatrix(this.loc_offsetMatrix, matrix);
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {

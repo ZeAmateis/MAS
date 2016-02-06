@@ -25,24 +25,25 @@ public class ThreadRendering extends Thread
 {
     private final MAS mas;
     public static final float[] vertices = {
-            -0.5f, 0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f, 0.5f };
+            0F, 0.0625F, 0F, 0F, 0F, 0F,
+            0.0625F, 0F, 0F, 0.0625F,
+            0.0625F, 0F, 0F, 0.0625F,
+            0.0625F, 0F, 0F, 0.0625F,
+            0.0625F, 0F, 0.0625F,
+            0.0625F, 0.0625F, 0.0625F,
+            0.0625F, 0.0625F, 0F,
+            0.0625F, 0F, 0F, 0.0625F,
+            0F, 0.0625F, 0.0625F,
+            0.0625F, 0.0625F, 0F,
+            0.0625F, 0F, 0F, 0F, 0F, 0F,
+            0F, 0.0625F, 0F, 0.0625F,
+            0.0625F, 0F, 0.0625F,
+            0.0625F, 0F, 0.0625F, 0F,
+            0.0625F, 0.0625F, 0F,
+            0.0625F, 0.0625F, 0.0625F,
+            0F, 0F, 0.0625F, 0F, 0F, 0F,
+            0.0625F, 0F, 0F, 0.0625F,
+            0F, 0.0625F };
     public static final float[] textureCoords = {
             0, 0, 0, 1, 1, 1, 1, 0, 0,
             0, 0, 1, 1, 1, 1, 0, 0, 0,
@@ -76,13 +77,16 @@ public class ThreadRendering extends Thread
             TerrainShader tShader = new TerrainShader();
 
             Camera camera = new Camera();
-            camera.getPosition().translate(0.0F, 1.5F, 0.0F);
+            camera.getPosition().translate(0F, 4F, -3F);
+            camera.setRotYaw(180);
+            camera.setRotPitch(30);
 
             CUBE_MODEL = ModelLoader.loadToVAO(vertices, textureCoords, indices);
             CUBE_TEXTURE_TEST = new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/test_texture_by_Whathefrench.png")));
             TEXTURED_MODEL_TEST = new TexturedModel(CUBE_MODEL, CUBE_TEXTURE_TEST);
 
             Terrain terrain = new Terrain(-0.9F, -0.9F, new ModelTexture(ModelLoader.loadTexture(MAS.class.getResourceAsStream("/terrain.png"))));
+            addTerrain(terrain);
 
             while (!Display.isCloseRequested() && mas.isRunning()) {
                 dim = mas.getNewCanvasSize().getAndSet(null);
@@ -102,7 +106,6 @@ public class ThreadRendering extends Thread
                 }
 
                 camera.move();
-                addTerrain(terrain);
 
                 Renderer.prepare();
                 shader.start();
@@ -119,7 +122,6 @@ public class ThreadRendering extends Thread
                 tShader.loadViewMatrix(camera);
                 Renderer.renderTerrains(terrains, tShader);
                 tShader.stop();
-                terrains.clear();
 
                 Display.update();
             }

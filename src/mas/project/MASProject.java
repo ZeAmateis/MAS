@@ -23,6 +23,7 @@ import org.lwjgl.util.vector.Vector3f;
 import mas.MAS;
 import mas.entity.Entity;
 import mas.render.ThreadRendering;
+import mas.utils.SwingUtils;
 
 /**
  * @author SCAREX
@@ -83,6 +84,10 @@ public class MASProject
     public void removeElementInTree(IMASProjectElement element) {
         ((DefaultMutableTreeNode) element).removeFromParent();
         this.treeModel.reload();
+        if (MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent() != null)
+            SwingUtils.changeComponentsState(MAS.getMAS().getRIGHT_PANEL(), true);
+        else
+            SwingUtils.changeComponentsState(MAS.getMAS().getRIGHT_PANEL(), false);
     }
 
     public void changeName(DefaultMutableTreeNode element, String name) {
@@ -113,10 +118,20 @@ public class MASProject
     }
 
     public byte[] compileProject() throws IOException {
+        MAS.getMAS().getStateBar().setLabel("Saving...");
+        MAS.getMAS().getStateBar().getProgBar().setMaximum(10);
+        MAS.getMAS().getStateBar().getProgBar().setValue(0);
         ByteArrayOutputStream b = new ByteArrayOutputStream();
+        MAS.getMAS().getStateBar().setLabel("C-Version");
         writeUTF8String(b, COMPILER_VERSION);
+        MAS.getMAS().getStateBar().getProgBar().setValue(1);
+        MAS.getMAS().getStateBar().setLabel("Name");
         writeUTF8String(b, this.getName());
+        MAS.getMAS().getStateBar().getProgBar().setValue(2);
+        MAS.getMAS().getStateBar().setLabel("Adding Elements");
         writeElement(b, (IMASProjectElement) this.treeModel.getRoot());
+        MAS.getMAS().getStateBar().getProgBar().setValue(10);
+        MAS.getMAS().getStateBar().setLabel("Saved");
         return b.toByteArray();
     }
 
@@ -193,14 +208,18 @@ public class MASProject
             writeFloat(b, vecPos.getY());
             writeFloat(b, vecPos.getZ());
 
+            Vector3f vecOffset = e.getPosition();
+            writeFloat(b, vecOffset.getX());
+            writeFloat(b, vecOffset.getY());
+            writeFloat(b, vecOffset.getZ());
+
             writeInt(b, e.getRotationX());
             writeInt(b, e.getRotationY());
             writeInt(b, e.getRotationZ());
 
-            Vector3f vecScale = e.getScale();
-            writeFloat(b, vecScale.getX());
-            writeFloat(b, vecScale.getY());
-            writeFloat(b, vecScale.getZ());
+            writeInt(b, e.getScaleX());
+            writeInt(b, e.getScaleY());
+            writeInt(b, e.getScaleZ());
         }
     }
 
@@ -215,11 +234,21 @@ public class MASProject
     }
 
     public static MASProject decompile(byte[] bytes) throws IOException {
+        MAS.getMAS().getStateBar().setLabel("Opening");
+        MAS.getMAS().getStateBar().getProgBar().setMaximum(10);
+        MAS.getMAS().getStateBar().getProgBar().setValue(0);
         ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+        MAS.getMAS().getStateBar().setLabel("C-Version");
         System.out.println("Compiled version : " + readUTF8String(b));
+        MAS.getMAS().getStateBar().getProgBar().setValue(1);
+        MAS.getMAS().getStateBar().setLabel("Name");
         String name = readUTF8String(b);
         System.out.println("Reading project : " + name);
+        MAS.getMAS().getStateBar().getProgBar().setValue(2);
+        MAS.getMAS().getStateBar().setLabel("Decompiling elements");
         MASProjectDirectory root = (MASProjectDirectory) readElement(b);
+        MAS.getMAS().getStateBar().getProgBar().setValue(10);
+        MAS.getMAS().getStateBar().setLabel("Opened");
         return new MASProject(name, root);
     }
 
@@ -279,15 +308,19 @@ public class MASProject
             float posZ = readFloat(b);
             Vector3f vecPos = new Vector3f(posX, posY, posZ);
 
+            float offsetX = readFloat(b);
+            float offsetY = readFloat(b);
+            float offsetZ = readFloat(b);
+            Vector3f vecOffset = new Vector3f(offsetX, offsetY, offsetZ);
+
             int rotX = readInt(b);
             int rotY = readInt(b);
             int rotZ = readInt(b);
 
-            float sizeX = readFloat(b);
-            float sizeY = readFloat(b);
-            float sizeZ = readFloat(b);
-            Vector3f vecSize = new Vector3f(sizeX, sizeY, sizeZ);
-            return new Entity(s, ThreadRendering.TEXTURED_MODEL_TEST, vecPos, rotX, rotY, rotZ, vecSize);
+            int sizeX = readInt(b);
+            int sizeY = readInt(b);
+            int sizeZ = readInt(b);
+            return new Entity(s, ThreadRendering.TEXTURED_MODEL_TEST, vecPos, vecOffset, rotX, rotY, rotZ, sizeX, sizeY, sizeZ);
         }
         return null;
     }

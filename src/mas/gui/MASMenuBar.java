@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import mas.MAS;
 import mas.MASLang;
@@ -76,12 +78,6 @@ public class MASMenuBar extends JMenuBar implements ActionListener
 
         this.editMenu.addSeparator();
 
-        this.deleteItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent() != null) MAS.getMAS().getProject().removeElementInTree((IMASProjectElement) MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent());
-            }
-        });
         this.editMenu.add(this.deleteItem);
 
         this.editMenu.addSeparator();
@@ -148,6 +144,13 @@ public class MASMenuBar extends JMenuBar implements ActionListener
             MASProject.openFile();
         } else if (e.getSource() == this.newItem) {
             MAS.getMAS().setProject(new MASProject(MASLang.translate("menu.file.new"), new ArrayList<>()));
+        } else if (e.getSource() == this.deleteItem) {
+            if (MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent() != null) {
+                int ret = JOptionPane.showConfirmDialog(MAS.getMAS(), MASLang.translate("menu.edit.delete.confirmation", ((DefaultMutableTreeNode) MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent()).getUserObject()), null, JOptionPane.YES_NO_OPTION);
+                if (ret == JOptionPane.YES_OPTION) {
+                    MAS.getMAS().getProject().removeElementInTree((IMASProjectElement) MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent());
+                }
+            }
         }
     }
 

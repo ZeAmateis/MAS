@@ -45,9 +45,12 @@ public class MASRightPanel extends JPanel
     private final JFormattedTextField xPositionField = new JFormattedTextField(new DecimalFormat("0.000"));
     private final JFormattedTextField yPositionField = new JFormattedTextField(new DecimalFormat("0.000"));
     private final JFormattedTextField zPositionField = new JFormattedTextField(new DecimalFormat("0.000"));
-    private final JSpinner xSizeSpinner = new JSpinner(new SpinnerNumberModel(1D, 0D, 100D, 0.1D));
-    private final JSpinner ySizeSpinner = new JSpinner(new SpinnerNumberModel(1D, 0D, 100D, 0.1D));
-    private final JSpinner zSizeSpinner = new JSpinner(new SpinnerNumberModel(1D, 0D, 100D, 0.1D));
+    private final JFormattedTextField xOffsetField = new JFormattedTextField(new DecimalFormat("0.000"));
+    private final JFormattedTextField yOffsetField = new JFormattedTextField(new DecimalFormat("0.000"));
+    private final JFormattedTextField zOffsetField = new JFormattedTextField(new DecimalFormat("0.000"));
+    private final JSpinner xSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
+    private final JSpinner ySizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
+    private final JSpinner zSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
 
     public MASRightPanel() {
         super();
@@ -62,6 +65,8 @@ public class MASRightPanel extends JPanel
         this.initRotationPanel();
         this.add(Box.createRigidArea(new Dimension(20, 20)));
         this.initPositionPanel();
+        this.add(Box.createRigidArea(new Dimension(20, 20)));
+        this.initOffsetPanel();
         this.add(Box.createRigidArea(new Dimension(20, 20)));
         this.initSizePanel();
     }
@@ -168,6 +173,40 @@ public class MASRightPanel extends JPanel
         this.add(posPanel);
     }
 
+    private void initOffsetPanel() {
+        JPanel offsetPanel = new JPanel();
+        offsetPanel.setLayout(new BoxLayout(offsetPanel, BoxLayout.X_AXIS));
+
+        this.xOffsetField.setValue(0);
+        this.xOffsetField.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (MAS.getMAS() != null && MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getOffset().setX(numberToFloatValue(xOffsetField.getValue()));
+            }
+        });
+        offsetPanel.add(this.xOffsetField);
+        this.yOffsetField.setValue(0);
+        this.yOffsetField.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (MAS.getMAS() != null && MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getOffset().setY(numberToFloatValue(yOffsetField.getValue()));
+            }
+        });
+        offsetPanel.add(this.yOffsetField);
+        this.zOffsetField.setValue(0);
+        this.zOffsetField.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (MAS.getMAS() != null && MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getOffset().setZ(numberToFloatValue(zOffsetField.getValue()));
+            }
+        });
+        offsetPanel.add(this.zOffsetField);
+
+        offsetPanel.setMaximumSize(new Dimension(800, 60));
+        offsetPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), MASLang.translate("panel.offset")));
+        this.add(offsetPanel);
+    }
+
     /**
      * Because the returned value from a formatted text field can be a double or
      * a long
@@ -186,21 +225,21 @@ public class MASRightPanel extends JPanel
         this.xSizeSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getScale().setX(numberToFloatValue(xSizeSpinner.getValue()));
+                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().setScaleX((int) xSizeSpinner.getValue());
             }
         });
         sizePanel.add(this.xSizeSpinner);
         this.ySizeSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getScale().setY(numberToFloatValue(ySizeSpinner.getValue()));
+                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().setScaleY((int) ySizeSpinner.getValue());
             }
         });
         sizePanel.add(this.ySizeSpinner);
         this.zSizeSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().getScale().setZ(numberToFloatValue(zSizeSpinner.getValue()));
+                if (MAS.getMAS().getProject().getSelectedEntity() != null) MAS.getMAS().getProject().getSelectedEntity().setScaleZ((int) zSizeSpinner.getValue());
             }
         });
         sizePanel.add(this.zSizeSpinner);
@@ -219,11 +258,15 @@ public class MASRightPanel extends JPanel
         this.xPositionField.setValue(vecPos.getX());
         this.yPositionField.setValue(vecPos.getY());
         this.zPositionField.setValue(vecPos.getZ());
+        
+        Vector3f vecOffset = e.getOffset();
+        this.xOffsetField.setValue(vecOffset.getX());
+        this.yOffsetField.setValue(vecOffset.getY());
+        this.zOffsetField.setValue(vecOffset.getZ());
 
-        Vector3f vecSize = e.getScale();
-        this.xSizeSpinner.setValue(vecSize.getX());
-        this.ySizeSpinner.setValue(vecSize.getY());
-        this.zSizeSpinner.setValue(vecSize.getZ());
+        this.xSizeSpinner.setValue(e.getScaleX());
+        this.ySizeSpinner.setValue(e.getScaleY());
+        this.zSizeSpinner.setValue(e.getScaleZ());
     }
 
     public static final class SliderSpinnerListener implements ChangeListener

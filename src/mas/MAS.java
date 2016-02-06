@@ -29,6 +29,7 @@ import mas.config.IKeyCallback;
 import mas.gui.MASLeftPanel;
 import mas.gui.MASMenuBar;
 import mas.gui.MASRightPanel;
+import mas.gui.MASStateBar;
 import mas.project.IMASProjectElement;
 import mas.project.MASProject;
 import mas.render.ThreadRendering;
@@ -91,8 +92,6 @@ public class MAS extends JFrame
     private final AtomicReference<Dimension> newCanvasSize = new AtomicReference<Dimension>();
     private AWTGLCanvas modelCanvas;
 
-    private MASMenuBar menuBar = new MASMenuBar();
-
     private MASProject project;
 
     public static void main(String[] args) {
@@ -130,6 +129,8 @@ public class MAS extends JFrame
         return INSTANCE;
     }
 
+    private final MASMenuBar menuBar = new MASMenuBar();
+    private final MASStateBar stateBar = new MASStateBar();
     private final MASLeftPanel LEFT_PANEL;
     private final MASRightPanel RIGHT_PANEL;
 
@@ -154,6 +155,8 @@ public class MAS extends JFrame
 
         RIGHT_PANEL = new MASRightPanel();
         this.add(RIGHT_PANEL, BorderLayout.EAST);
+
+        this.add(this.stateBar, BorderLayout.SOUTH);
 
         this.setMinimumSize(new Dimension(600, 600));
         this.setLocationRelativeTo(null);
@@ -263,5 +266,12 @@ public class MAS extends JFrame
      */
     public MASRightPanel getRIGHT_PANEL() {
         return RIGHT_PANEL;
+    }
+
+    /**
+     * @return the stateBar
+     */
+    public MASStateBar getStateBar() {
+        return stateBar;
     }
 }

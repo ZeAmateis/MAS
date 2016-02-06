@@ -44,8 +44,11 @@ public class Renderer
 
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+        
+        Matrix4f offsetMatrix = MathUtils.createTransformationMatrix(e.getOffset(), e.getRotationX(), e.getRotationY(), e.getRotationZ(), new Vector3f(1F, 1F, 1F));
+        shader.loadOffsetMatrix(offsetMatrix);
 
-        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(e.getPosition(), e.getRotationX(), e.getRotationY(), e.getRotationZ(), e.getScale());
+        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(e.getPosition(), 0F, 0F, 0F, new Vector3f(e.getScaleX(), e.getScaleY(), e.getScaleZ()));
         shader.loadTransformationMatrix(transformationMatrix);
 
         shader.loadProjectionMatrix(Renderer.projectionMatrix);

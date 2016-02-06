@@ -65,14 +65,14 @@ public class MASLeftPanel extends JPanel
                     modifyItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"));
+                            String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"), ((DefaultMutableTreeNode) element).getUserObject());
                             if (s != null && !s.isEmpty()) {
                                 MAS.getMAS().getProject().changeName((DefaultMutableTreeNode) element, s);
                             }
                         }
                     });
                     popup.add(modifyItem);
-                    JMenuItem deleteItem = new JMenuItem(MASLang.translate("project.delete"));
+                    JMenuItem deleteItem = new JMenuItem(MASLang.translate("menu.edit.delete"));
                     deleteItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -99,7 +99,7 @@ public class MASLeftPanel extends JPanel
                             public void actionPerformed(ActionEvent e) {
                                 String s = JOptionPane.showInputDialog(null, MASLang.translate("project.get_name"));
                                 if (s != null && !s.isEmpty()) {
-                                    MAS.getMAS().getProject().addElement((MASProjectDirectory) element, new Entity(s, ThreadRendering.TEXTURED_MODEL_TEST, new Vector3f(), 0, 0, 0, new Vector3f(1F, 1F, 1F)));
+                                    MAS.getMAS().getProject().addElement((MASProjectDirectory) element, new Entity(s, ThreadRendering.TEXTURED_MODEL_TEST, new Vector3f(), new Vector3f(), 0, 0, 0, 16, 16, 16));
                                 }
                             }
                         });
@@ -128,7 +128,10 @@ public class MASLeftPanel extends JPanel
     }
 
     public void delete(IMASProjectElement element) {
-        MAS.getMAS().getProject().removeElementInTree(element);
+        int ret = JOptionPane.showConfirmDialog(MAS.getMAS(), MASLang.translate("menu.edit.delete.confirmation", ((DefaultMutableTreeNode) element).getUserObject()), null, JOptionPane.YES_NO_OPTION);
+        if (ret == JOptionPane.YES_OPTION) {
+            MAS.getMAS().getProject().removeElementInTree(element);
+        }
     }
 
     public void setModel(TreeModel model) {
