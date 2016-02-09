@@ -1,2 +1,4 @@
-- exportation system (saving system done)
 - axis draw
+- texturing
+- animation system (you can leave the compilation part)
+- debug mod in minecraft (if you think you can do it :p)
