@@ -31,8 +31,10 @@ import mas.gui.MASLeftPanel;
 import mas.gui.MASMenuBar;
 import mas.gui.MASRightPanel;
 import mas.gui.MASStateBar;
+import mas.project.IMASExportationModule;
 import mas.project.IMASProjectElement;
 import mas.project.MASProject;
+import mas.project.ModuleScannerThread;
 import mas.render.ThreadRendering;
 
 /**
@@ -94,6 +96,7 @@ public class MAS extends JFrame
     private AWTGLCanvas modelCanvas;
 
     private MASProject project;
+    private ArrayList<IMASExportationModule> exportationModuleList = new ArrayList<IMASExportationModule>();
 
     public static void main(String[] args) {
         try {
@@ -177,6 +180,8 @@ public class MAS extends JFrame
 
         project = new MASProject(MASLang.translate("menu.file.new"), new ArrayList<IMASProjectElement>());
         LEFT_PANEL.setModel(project.getTreeModel());
+
+        (new ModuleScannerThread()).start();
     }
 
     private void initCanvas() {
@@ -284,5 +289,16 @@ public class MAS extends JFrame
      */
     public MASStateBar getStateBar() {
         return stateBar;
+    }
+
+    /**
+     * @return the exportationModuleList
+     */
+    public ArrayList<IMASExportationModule> getExportationModuleList() {
+        return exportationModuleList;
+    }
+
+    public void addExportationModule(IMASExportationModule module) {
+        this.exportationModuleList.add(module);
     }
 }

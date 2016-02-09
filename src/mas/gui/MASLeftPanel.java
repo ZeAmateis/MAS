@@ -50,7 +50,7 @@ public class MASLeftPanel extends JPanel
 
     private void initGui() {
         this.setLayout(new BorderLayout());
-        this.add(Box.createRigidArea(new Dimension(200, 2)), BorderLayout.NORTH);
+        this.add(Box.createRigidArea(new Dimension(400, 2)), BorderLayout.NORTH);
         this.add(this.tree, BorderLayout.CENTER);
         this.tree.addMouseListener(new MouseAdapter() {
             @Override

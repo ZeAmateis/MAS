@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -12,10 +13,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import mas.MAS;
 import mas.MASLang;
+import mas.MASMainConfig;
+import mas.MASMainConfig.EnumMainConfig;
 import mas.project.IMASProjectElement;
 import mas.project.MASProject;
 
@@ -23,7 +28,7 @@ import mas.project.MASProject;
  * @author SCAREX
  * 
  */
-public class MASMenuBar extends JMenuBar implements ActionListener
+public class MASMenuBar extends JMenuBar implements ActionListener, MenuListener
 {
     private static final long serialVersionUID = -6394631766691329465L;
     private JMenu filesMenu = new JMenu(MASLang.translate("menu.file"));
@@ -35,6 +40,8 @@ public class MASMenuBar extends JMenuBar implements ActionListener
     private final JMenuItem quitItem = createAltMenuItem(MASLang.translate("menu.file.quit"), KeyEvent.VK_Q);
     private final JMenuItem saveItem = createCtrlMenuItem(MASLang.translate("menu.file.save"), KeyEvent.VK_S);
     private final JMenuItem saveAsItem = createAltMenuItem(MASLang.translate("menu.file.save_as"), KeyEvent.VK_S);
+    private final JMenu exportMenu = new JMenu(MASLang.translate("menu.file.export"));
+    private final JMenuItem noneExportationModuleItem = new JMenuItem(MASLang.translate("menu.file.export.none"));
     // Edit
     private final JMenuItem undoItem = createCtrlMenuItem(MASLang.translate("menu.edit.undo"), KeyEvent.VK_Z);
     private final JMenuItem redoItem = createCtrlMenuItem(MASLang.translate("menu.edit.redo"), KeyEvent.VK_Y);
@@ -47,6 +54,7 @@ public class MASMenuBar extends JMenuBar implements ActionListener
     private final JMenuItem gitItem = createSimpleMenuItem(MASLang.translate("menu.help.git"));
     private final JMenuItem langProjectItem = createSimpleMenuItem(MASLang.translate("menu.help.langProject"));
     private final JMenuItem scarexWebsiteItem = createSimpleMenuItem(MASLang.translate("menu.help.scarexWebsite"));
+    private final JMenuItem reloadLangFiles = createSimpleMenuItem(MASLang.translate("menu.help.reload_lang_files"));
 
     public MASMenuBar() {
         super();
@@ -64,6 +72,9 @@ public class MASMenuBar extends JMenuBar implements ActionListener
 
         this.filesMenu.add(this.saveItem);
         this.filesMenu.add(this.saveAsItem);
+        this.filesMenu.add(this.exportMenu);
+        this.exportMenu.addMenuListener(this);
+        this.noneExportationModuleItem.setEnabled(false);
 
         this.filesMenu.addSeparator();
 
@@ -97,6 +108,7 @@ public class MASMenuBar extends JMenuBar implements ActionListener
         this.helpMenu.add(this.gitItem);
         this.helpMenu.add(this.langProjectItem);
         this.helpMenu.add(this.scarexWebsiteItem);
+        this.helpMenu.add(this.reloadLangFiles);
 
         this.add(this.helpMenu);
     }
@@ -151,6 +163,12 @@ public class MASMenuBar extends JMenuBar implements ActionListener
                     MAS.getMAS().getProject().removeElementInTree((IMASProjectElement) MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent());
                 }
             }
+        } else if (e.getSource() == this.reloadLangFiles) {
+            MAS.getMAS().getStateBar().getProgBar().setIndeterminate(true);
+            MAS.getMAS().getStateBar().setLabel("Reloading lang files...");
+            MASLang.load(new File(MASMainConfig.getValue(EnumMainConfig.APP_PATH)));
+            MAS.getMAS().getStateBar().getProgBar().setIndeterminate(false);
+            MAS.getMAS().getStateBar().setLabel("Lang files loaded");
         }
     }
 
@@ -161,4 +179,31 @@ public class MASMenuBar extends JMenuBar implements ActionListener
             e1.printStackTrace();
         }
     }
+
+    @Override
+    public void menuSelected(MenuEvent e) {
+        if (e.getSource() == this.exportMenu) {
+            this.exportMenu.removeAll();
+            if (MAS.getMAS().getExportationModuleList().size() > 0) {
+                MAS.getMAS().getExportationModuleList().forEach(module -> {
+                    JMenuItem item = new JMenuItem(module.getName());
+                    item.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            module.export(MAS.getMAS().getProject());
+                        }
+                    });
+                    this.exportMenu.add(item);
+                });
+            } else {
+                this.exportMenu.add(this.noneExportationModuleItem);
+            }
+        }
+    }
+
+    @Override
+    public void menuDeselected(MenuEvent e) {}
+
+    @Override
+    public void menuCanceled(MenuEvent e) {}
 }
