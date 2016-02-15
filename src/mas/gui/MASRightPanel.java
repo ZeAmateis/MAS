@@ -3,6 +3,7 @@ package mas.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -51,6 +52,10 @@ public class MASRightPanel extends JPanel
     private final JSpinner xSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
     private final JSpinner ySizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
     private final JSpinner zSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 0, 100, 1));
+    private final JSpinner uSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 1, 1024, 1));
+    private final JSpinner vSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 1, 1024, 1));
+    private final JSpinner uOffsetSpinner = new JSpinner(new SpinnerNumberModel(16, 1, 1024, 1));
+    private final JSpinner vOffsetSpinner = new JSpinner(new SpinnerNumberModel(16, 1, 1024, 1));
 
     public MASRightPanel() {
         super();
@@ -69,6 +74,8 @@ public class MASRightPanel extends JPanel
         this.initOffsetPanel();
         this.add(Box.createRigidArea(new Dimension(20, 20)));
         this.initSizePanel();
+        this.add(Box.createRigidArea(new Dimension(20, 20)));
+        this.initTexturingPanel();
     }
 
     private void initRotationPanel() {
@@ -249,6 +256,25 @@ public class MASRightPanel extends JPanel
         this.add(sizePanel);
     }
 
+    private void initTexturingPanel() {
+        JPanel texturingPanel = new JPanel(new GridLayout(3, 3));
+        texturingPanel.add(new JLabel("Offset"));
+        texturingPanel.add(Box.createRigidArea(new Dimension(1, 1)));
+        texturingPanel.add(new JLabel("Size"));
+
+        texturingPanel.add(this.uOffsetSpinner);
+        texturingPanel.add(new JLabel("U", JLabel.CENTER));
+        texturingPanel.add(this.uSizeSpinner);
+
+        texturingPanel.add(this.vOffsetSpinner);
+        texturingPanel.add(new JLabel("V", JLabel.CENTER));
+        texturingPanel.add(this.vSizeSpinner);
+
+        texturingPanel.setMaximumSize(new Dimension(800, 100));
+        texturingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Texturing"));
+        this.add(texturingPanel);
+    }
+
     public void loadValuesForEntity(Entity e) {
         this.xSlider.setValue(e.getRotationX());
         this.ySlider.setValue(e.getRotationY());
@@ -258,7 +284,7 @@ public class MASRightPanel extends JPanel
         this.xPositionField.setValue(vecPos.getX());
         this.yPositionField.setValue(vecPos.getY());
         this.zPositionField.setValue(vecPos.getZ());
-        
+
         Vector3f vecOffset = e.getOffset();
         this.xOffsetField.setValue(vecOffset.getX());
         this.yOffsetField.setValue(vecOffset.getY());

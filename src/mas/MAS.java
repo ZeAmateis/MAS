@@ -172,7 +172,7 @@ public class MAS extends JFrame
 
         this.add(this.stateBar, BorderLayout.SOUTH);
 
-        this.setMinimumSize(new Dimension(600, 600));
+        this.setMinimumSize(new Dimension(900, 600));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
@@ -181,7 +181,7 @@ public class MAS extends JFrame
         project = new MASProject(MASLang.translate("menu.file.new"), new ArrayList<IMASProjectElement>());
         LEFT_PANEL.setModel(project.getTreeModel());
 
-        (new ModuleScannerThread()).start();
+        (new ModuleScannerThread(MASMainConfig.getValue(EnumMainConfig.APP_PATH))).start();
     }
 
     private void initCanvas() {
