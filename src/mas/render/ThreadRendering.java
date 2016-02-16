@@ -62,6 +62,7 @@ public class ThreadRendering extends Thread
     public static ModelTexture CUBE_TEXTURE_TEST;
     public static TexturedModel TEXTURED_MODEL_TEST;
     public static volatile boolean isRenderStarted = false;
+    private static final Camera camera = new Camera();
 
     public ThreadRendering(MAS mas) {
         super("Rendering");
@@ -77,7 +78,6 @@ public class ThreadRendering extends Thread
             BasicShader shader = new BasicShader();
             TerrainShader tShader = new TerrainShader();
 
-            Camera camera = new Camera();
             camera.getPosition().translate(0F, 4F, -3F);
             camera.setRotYaw(180);
             camera.setRotPitch(30);
@@ -140,5 +140,12 @@ public class ThreadRendering extends Thread
 
     public void addTerrain(Terrain t) {
         terrains.add(t);
+    }
+
+    /**
+     * @return the camera
+     */
+    public static Camera getCamera() {
+        return camera;
     }
 }

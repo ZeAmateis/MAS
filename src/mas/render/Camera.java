@@ -26,6 +26,7 @@ public class Camera
     public Camera() {
         config.registerConfig("movement_ratio", "0.06", new DecimalFormat("0.0"));
         config.registerConfig("mouse_sensibility", "0.3", new DecimalFormat("0.0"));
+        config.registerConfig("fov", "80", new DecimalFormat("0.0"));
         PreferencesFrame.registerConfig(config);
         
         keybindConfig.registerConfig("forward", Keyboard.KEY_Z);
@@ -114,5 +115,12 @@ public class Camera
      */
     public void setRoll(float roll) {
         this.roll = roll;
+    }
+
+    /**
+     * @return the config
+     */
+    public SimpleStringDescConfig getConfig() {
+        return config;
     }
 }

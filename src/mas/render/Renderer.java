@@ -24,7 +24,6 @@ import mas.utils.MathUtils;
  */
 public class Renderer
 {
-    private static final float FOV = 80;
     private static final float NEAR_PLANE = 0.1F;
     private static final float FAR_PLANE = 1000;
 
@@ -44,7 +43,7 @@ public class Renderer
 
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        
+
         Matrix4f offsetMatrix = MathUtils.createTransformationMatrix(e.getOffset(), e.getRotationX(), e.getRotationY(), e.getRotationZ(), new Vector3f(1F, 1F, 1F));
         shader.loadOffsetMatrix(offsetMatrix);
 
@@ -90,7 +89,7 @@ public class Renderer
 
     public static void initProjectionMatrix() {
         float a = (float) MAS.getMAS().getModelCanvas().getWidth() / (float) MAS.getMAS().getModelCanvas().getHeight();
-        float yScale = (float) ((1.0F / Math.tan(Math.toRadians(FOV / 2.0F))) * a);
+        float yScale = (float) ((1.0F / Math.tan(Math.toRadians(ThreadRendering.getCamera().getConfig().getFloatValue("fov") / 2.0F))) * a);
         float xScale = yScale / a;
         float frustrumLength = FAR_PLANE - NEAR_PLANE;
 
