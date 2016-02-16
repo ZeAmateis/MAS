@@ -1,5 +1,7 @@
 package mas.render.model;
 
+import mas.render.ModelLoader;
+
 /**
  * @author SCAREX
  *
@@ -26,5 +28,9 @@ public class RawModel
      */
     public int getVertexCount() {
         return vertexCount;
+    }
+    
+    public void clean() {
+        ModelLoader.cleanVAO(vaoID);
     }
 }

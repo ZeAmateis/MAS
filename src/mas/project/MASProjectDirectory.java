@@ -19,4 +19,7 @@ public class MASProjectDirectory extends DefaultMutableTreeNode implements IMASP
             this.insert((MutableTreeNode) elements.get(i), i);
         }
     }
+
+    @Override
+    public void clean() {}
 }

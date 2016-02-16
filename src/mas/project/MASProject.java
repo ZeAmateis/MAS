@@ -82,6 +82,7 @@ public class MASProject
     }
 
     public void removeElementInTree(IMASProjectElement element) {
+        ThreadRendering.addElementToRemove(element);
         ((DefaultMutableTreeNode) element).removeFromParent();
         this.treeModel.reload();
         if (MAS.getMAS().getLEFT_PANEL().getTree().getLastSelectedPathComponent() != null)

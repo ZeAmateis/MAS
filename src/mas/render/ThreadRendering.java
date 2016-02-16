@@ -3,6 +3,7 @@ package mas.render;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
@@ -14,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import mas.MAS;
 import mas.config.IKeyCallback;
 import mas.entity.Entity;
+import mas.project.IMASProjectElement;
 import mas.render.model.RawModel;
 import mas.render.model.TexturedModel;
 import mas.render.terrain.Terrain;
@@ -62,6 +64,7 @@ public class ThreadRendering extends Thread
     public static ModelTexture CUBE_TEXTURE_TEST;
     public static TexturedModel TEXTURED_MODEL_TEST;
     public static volatile boolean isRenderStarted = false;
+    private static Vector<IMASProjectElement> elementsToRemove = new Vector<>();
     private static final Camera camera = new Camera();
 
     public ThreadRendering(MAS mas) {
@@ -124,6 +127,10 @@ public class ThreadRendering extends Thread
                 tShader.loadViewMatrix(camera);
                 Renderer.renderTerrains(terrains, tShader);
                 tShader.stop();
+                
+                elementsToRemove.forEach(elem -> {
+                    elem.clean();
+                });
 
                 Display.update();
             }
@@ -147,5 +154,9 @@ public class ThreadRendering extends Thread
      */
     public static Camera getCamera() {
         return camera;
+    }
+    
+    public static void addElementToRemove(IMASProjectElement elem) {
+        elementsToRemove.addElement(elem);
     }
 }

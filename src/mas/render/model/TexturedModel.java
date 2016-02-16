@@ -29,4 +29,9 @@ public class TexturedModel
     public ModelTexture getTexture() {
         return texture;
     }
+
+    public void clean() {
+        this.model.clean();
+        this.texture.clean();
+    }
 }

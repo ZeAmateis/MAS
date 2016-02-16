@@ -5,4 +5,6 @@ package mas.project;
  *
  */
 public interface IMASProjectElement
-{}
+{
+    public void clean();
+}

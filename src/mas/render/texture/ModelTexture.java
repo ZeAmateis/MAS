@@ -1,5 +1,7 @@
 package mas.render.texture;
 
+import mas.render.ModelLoader;
+
 /**
  * @author SCAREX
  *
@@ -17,5 +19,9 @@ public class ModelTexture
      */
     public int getId() {
         return id;
+    }
+    
+    public void clean() {
+        ModelLoader.cleanTexture(id);
     }
 }

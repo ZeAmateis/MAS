@@ -175,4 +175,9 @@ public class Entity extends DefaultMutableTreeNode implements IMASProjectElement
     public void setScaleZ(int scaleZ) {
         this.scaleZ = scaleZ;
     }
+    
+    @Override
+    public void clean() {
+        this.model.clean();
+    }
 }
