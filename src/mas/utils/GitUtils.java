@@ -1,4 +1,4 @@
-package mas.git;
+package mas.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
